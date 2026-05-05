@@ -94,148 +94,108 @@ const EventDashboard = () => {
     return (
         <div style={{ position: 'relative' }}>
             {/* Dashboard Navigation */}
-            <nav style={{ position: 'fixed', top: 0, width: '100%', padding: '1.5rem 2rem', zIndex: 100, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(5, 7, 10, 0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid var(--card-border)' }}>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-primary)', letterSpacing: '2px' }}>ORION 2K26</div>
-                <div style={{ display: 'flex', gap: '2rem' }}>
-                    <button onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', letterSpacing: '1px' }}>LOGIN / SYNC</button>
-                    <button style={{ background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', letterSpacing: '1px' }} onClick={() => document.getElementById('events').scrollIntoView({ behavior: 'smooth' })}>PROTOCOLS</button>
-                    <button onClick={() => navigate('/admin-login')} style={{ border: '1px solid var(--accent-secondary)', padding: '0.4rem 1rem', borderRadius: '8px', color: 'var(--accent-secondary)', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer' }}>ADMIN ACCESS</button>
+            <nav className="fixed top-0 w-full px-4 md:px-8 py-4 z-[100] flex flex-col md:flex-row justify-between items-center bg-[rgba(5,7,10,0.8)] backdrop-blur-md border-b border-[var(--card-border)]">
+                <div className="text-xl md:text-2xl font-black text-[var(--accent-primary)] tracking-widest mb-4 md:mb-0">ORION 2K26</div>
+                <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+                    <button onClick={() => navigate('/register')} className="bg-none border-none text-[var(--text-secondary)] text-[10px] md:text-xs font-semibold cursor-pointer tracking-widest uppercase">LOGIN / SYNC</button>
+                    <button className="bg-none border-none text-[var(--text-primary)] text-[10px] md:text-xs font-semibold cursor-pointer tracking-widest uppercase" onClick={() => document.getElementById('events').scrollIntoView({ behavior: 'smooth' })}>PROTOCOLS</button>
+                    <button onClick={() => navigate('/admin-login')} className="border border-[var(--accent-secondary)] px-4 py-1.5 rounded-lg text-[var(--accent-secondary)] text-[10px] md:text-xs font-extrabold cursor-pointer uppercase">ADMIN ACCESS</button>
                 </div>
             </nav>
 
             {/* Hero Section */}
-            <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', zIndex: -1, background: 'radial-gradient(circle at center, rgba(0, 210, 255, 0.05) 0%, transparent 70%)' }}></div>
-                <h2 style={{ 
-                    color: '#fff', 
-                    fontSize: '1.4rem', 
-                    fontWeight: 900, 
-                    textTransform: 'uppercase', 
-                    letterSpacing: '5px', 
-                    marginBottom: '0.5rem',
-                    textShadow: '0 0 20px rgba(0, 210, 255, 0.4)'
-                }}>
+            <div className="min-h-[90vh] md:h-[80vh] flex flex-col justify-center items-center relative overflow-hidden px-4 text-center">
+                <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] z-[-1] bg-[radial-gradient(circle_at_center,rgba(0,210,255,0.05)_0%,transparent_70%)]"></div>
+                <h2 className="text-white text-sm md:text-xl lg:text-2xl font-black uppercase tracking-[2px] md:tracking-[5px] mb-2 drop-shadow-[0_0_20px_rgba(0,210,255,0.4)]">
                     KONGU ENGINEERING COLLEGE
                 </h2>
-                <h3 style={{ 
-                    color: 'var(--accent-primary)', 
-                    fontSize: '1.1rem', 
-                    fontWeight: 800, 
-                    textTransform: 'uppercase', 
-                    letterSpacing: '3px', 
-                    marginBottom: '2.5rem',
-                    background: 'rgba(0, 210, 255, 0.1)',
-                    padding: '5px 20px',
-                    borderRadius: '4px',
-                    border: '1px solid rgba(0, 210, 255, 0.2)'
-                }}>
+                <h3 className="text-[var(--accent-primary)] text-xs md:text-lg font-extrabold uppercase tracking-[1px] md:tracking-[3px] mb-6 md:mb-10 bg-[rgba(0,210,255,0.1)] px-4 md:px-6 py-2 rounded-md border border-[rgba(0,210,255,0.2)]">
                     DEPARTMENT OF COMPUTER APPLICATIONS (MCA)
                 </h3>
-                <h1 className="hero-title">ORION 2K26</h1>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '1.5rem', fontWeight: 300, letterSpacing: '8px', marginBottom: '1rem' }}>
+                <h1 className="text-5xl md:text-7xl lg:text-9xl font-black mb-4 tracking-tighter bg-gradient-to-br from-[#00d2ff] to-[#3a7bd5] bg-clip-text text-transparent drop-shadow-2xl">ORION 2K26</h1>
+                <p className="text-[var(--text-secondary)] text-sm md:text-xl lg:text-2xl font-light tracking-[4px] md:tracking-[8px] mb-6 md:mb-4 uppercase">
                     TRANSFORM YOURSELF
                 </p>
                 
                 {/* Running Clock */}
-                <div style={{ 
-                    color: 'white', 
-                    fontSize: '2rem', 
-                    fontWeight: 800, 
-                    letterSpacing: '4px', 
-                    marginBottom: '1rem',
-                    fontFamily: 'monospace',
-                    textShadow: '0 0 15px rgba(255, 255, 255, 0.3)'
-                }}>
+                <div className="text-white text-2xl md:text-4xl font-bold tracking-[2px] md:tracking-[4px] mb-4 font-mono drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
                     {currentTime.toLocaleTimeString([], { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                 </div>
 
                 {/* Days to Go */}
                 {daysRemaining > 0 && (
-                    <div style={{ 
-                        background: 'linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)', 
-                        padding: '10px 25px', 
-                        borderRadius: '50px', 
-                        color: 'white', 
-                        fontWeight: 900, 
-                        fontSize: '1rem', 
-                        letterSpacing: '2px', 
-                        marginBottom: '2rem',
-                        boxShadow: '0 10px 30px rgba(0, 210, 255, 0.3)',
-                        textTransform: 'uppercase'
-                    }}>
+                    <div className="bg-gradient-to-r from-[#00d2ff] to-[#3a7bd5] px-6 md:px-8 py-2 md:py-3 rounded-full text-white font-black text-sm md:text-lg tracking-widest mb-8 shadow-[0_10px_30px_rgba(0,210,255,0.3)] uppercase">
                         {daysRemaining} DAYS TO GO
                     </div>
                 )}
 
-                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                  <div style={{ height: '1px', width: '50px', background: 'var(--accent-primary)' }}></div>
-                  <span style={{ fontSize: '1.1rem', letterSpacing: '2px', fontWeight: 600 }}>MARCH 5, 2027</span>
-                  <div style={{ height: '1px', width: '50px', background: 'var(--accent-primary)' }}></div>
+                <div className="flex items-center gap-4 md:gap-6">
+                  <div className="h-[1px] w-8 md:w-12 bg-[var(--accent-primary)]"></div>
+                  <span className="text-sm md:text-lg tracking-[2px] md:tracking-[4px] font-semibold text-white">MARCH 5, 2027</span>
+                  <div className="h-[1px] w-8 md:w-12 bg-[var(--accent-primary)]"></div>
                 </div>
 
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1, duration: 1, repeat: Infinity, repeatType: "reverse" }}
-                    style={{ position: 'absolute', bottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
+                    className="absolute bottom-8 flex flex-col items-center gap-2 cursor-pointer"
                     onClick={() => document.getElementById('events').scrollIntoView({ behavior: 'smooth' })}
                 >
-                    <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '2px' }}>SCROLL TO EXPLORE</span>
-                    <div style={{ width: '2px', height: '40px', background: 'linear-gradient(to bottom, var(--accent-primary), transparent)' }}></div>
+                    <span className="text-[10px] text-[var(--text-secondary)] tracking-widest uppercase">SCROLL TO EXPLORE</span>
+                    <div className="w-[2px] h-10 bg-gradient-to-b from-[var(--accent-primary)] to-transparent"></div>
                 </motion.div>
             </div>
 
             {/* Content Section */}
-            <div className="container" id="events" style={{ minHeight: '100vh', paddingBottom: '100px' }}>
+            <div className="container mx-auto px-4 py-16" id="events">
                 
                 {/* General Protocols Section */}
-                <div style={{ marginBottom: '5rem', background: 'rgba(255, 255, 255, 0.02)', padding: '4rem 3rem', borderRadius: '32px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
-                        <div style={{ height: '2px', width: '60px', background: 'linear-gradient(to left, var(--accent-primary), transparent)' }}></div>
-                        <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 800, letterSpacing: '6px', margin: 0, textAlign: 'center', textTransform: 'uppercase' }}>GENERAL PROTOCOLS</h2>
-                        <div style={{ height: '2px', width: '60px', background: 'linear-gradient(to right, var(--accent-primary), transparent)' }}></div>
+                <div className="mb-20 bg-[rgba(255,255,255,0.02)] p-6 md:p-12 rounded-[32px] border border-[rgba(255,255,255,0.08)] shadow-2xl">
+                    <div className="flex items-center justify-center gap-4 mb-12">
+                        <div className="hidden md:block h-[2px] w-16 bg-gradient-to-l from-[var(--accent-primary)] to-transparent"></div>
+                        <h2 className="text-[var(--accent-primary)] text-xl md:text-3xl font-black tracking-[4px] md:tracking-[8px] text-center uppercase">GENERAL PROTOCOLS</h2>
+                        <div className="hidden md:block h-[2px] w-16 bg-gradient-to-r from-[var(--accent-primary)] to-transparent"></div>
                     </div>
                     
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem' }}>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Users size={32} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>IDENTIFICATION</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Valid College ID Card is mandatory for base entry.</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+                        <div className="p-6 rounded-2xl border border-white/5 bg-white/5 text-center flex flex-col items-center">
+                            <div className="text-[var(--accent-primary)] mb-4"><Users size={32} /></div>
+                            <h4 className="text-white mb-2 font-bold text-sm tracking-wider uppercase">IDENTIFICATION</h4>
+                            <p className="text-[var(--text-secondary)] text-xs leading-relaxed">Valid College ID Card is mandatory for base entry.</p>
                         </div>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Trophy size={32} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>DRESS CODE</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Formal attire is required for all operatives.</p>
+                        <div className="p-6 rounded-2xl border border-white/5 bg-white/5 text-center flex flex-col items-center">
+                            <div className="text-[var(--accent-primary)] mb-4"><Trophy size={32} /></div>
+                            <h4 className="text-white mb-2 font-bold text-sm tracking-wider uppercase">DRESS CODE</h4>
+                            <p className="text-[var(--text-secondary)] text-xs leading-relaxed">Formal attire is required for all operatives.</p>
                         </div>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Info size={32} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>JUDGEMENT</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>The council's (Judges) decision is final and binding.</p>
+                        <div className="p-6 rounded-2xl border border-white/5 bg-white/5 text-center flex flex-col items-center">
+                            <div className="text-[var(--accent-primary)] mb-4"><Info size={32} /></div>
+                            <h4 className="text-white mb-2 font-bold text-sm tracking-wider uppercase">JUDGEMENT</h4>
+                            <p className="text-[var(--text-secondary)] text-xs leading-relaxed">The council's (Judges) decision is final and binding.</p>
                         </div>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Send size={32} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>DEVICE CONTROL</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Mobile usage restricted during technical operations.</p>
+                        <div className="p-6 rounded-2xl border border-white/5 bg-white/5 text-center flex flex-col items-center">
+                            <div className="text-[var(--accent-primary)] mb-4"><Send size={32} /></div>
+                            <h4 className="text-white mb-2 font-bold text-sm tracking-wider uppercase">DEVICE CONTROL</h4>
+                            <p className="text-[var(--text-secondary)] text-xs leading-relaxed">Mobile usage restricted during technical operations.</p>
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '3rem', padding: '1.5rem 2rem', borderRadius: '16px', background: 'rgba(255, 64, 128, 0.08)', border: '1px solid rgba(255, 64, 128, 0.3)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                        <div style={{ background: '#ff4080', color: 'white', padding: '8px 16px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Limit Notice</div>
-                        <p style={{ color: '#ffecf1', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.5px' }}>
-                            One operative can participate in a <span style={{ color: '#ff4080', fontWeight: 900, textDecoration: 'underline' }}>MAXIMUM of 2</span> events.
+                    <div className="mt-12 p-4 md:p-6 rounded-2xl bg-[rgba(255,64,128,0.08)] border border-[rgba(255,64,128,0.3)] flex flex-col md:flex-row items-center gap-4 md:gap-6">
+                        <div className="bg-[#ff4080] text-white px-4 py-2 rounded-lg text-xs font-black uppercase text-center">Limit Notice</div>
+                        <p className="text-[#ffecf1] font-semibold text-sm md:text-base m-0 tracking-wide text-center md:text-left">
+                            One operative can participate in a <span className="text-[#ff4080] font-black underline">MAXIMUM of 2</span> events.
                         </p>
                     </div>
                 </div>
 
-                <pre style={{ color: 'white', fontSize: '0.6rem' }}>DEBUG: Found {events.length} total events</pre>
-                {/* Technical Events Section */}
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '5rem' }}>
-                    <div className="glass-card" style={{ padding: '0.8rem 2rem', borderRadius: '50px', border: '1px solid var(--accent-primary)' }}>
-                        <span style={{ fontSize: '1rem', fontWeight: 700, letterSpacing: '4px' }}>TECHNICAL COMPETITIONS</span>
+                <div className="flex justify-center mb-12">
+                    <div className="px-8 py-3 rounded-full border border-[var(--accent-primary)] bg-[var(--accent-primary)]/10">
+                        <span className="text-white text-sm md:text-lg font-black tracking-[4px] uppercase">TECHNICAL COMPETITIONS</span>
                     </div>
                 </div>
                 
-                <div className="event-grid" style={{ marginBottom: '10rem' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-40">
                     {events.filter(e => e.category === 'technical' || !e.category).length > 0 ? (
                         events.filter(e => e.category === 'technical' || !e.category).map((event, index) => (
                             <motion.div 
@@ -244,35 +204,21 @@ const EventDashboard = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: index * 0.1, duration: 0.5 }}
-                                whileHover={{ 
-                                    scale: 1.05, 
-                                    y: -10,
-                                    rotateX: 2,
-                                    rotateY: -2,
-                                    boxShadow: '0 25px 50px -12px rgba(0, 210, 255, 0.4)'
-                                }}
-                                whileTap={{ scale: 0.98 }}
-                                className="glass-card event-card" 
-                                style={{ 
-                                    transition: 'all 0.1s ease', 
-                                    perspective: '1000px',
-                                    transformStyle: 'preserve-3d'
-                                }}
+                                className="bg-[#161b22]/95 border border-[rgba(255,255,255,0.1)] p-6 rounded-3xl hover:border-[rgba(0,210,255,0.4)] transition-all shadow-xl flex flex-col h-full"
                             >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-
-                                    <h2 style={{ color: 'var(--accent-primary)', margin: 0, fontSize: '1.8rem', fontWeight: 700 }}>{event.name}</h2>
-                                    <span style={{ padding: '4px 12px', borderRadius: '8px', border: '1px solid var(--accent-secondary)', fontSize: '0.7rem', fontWeight: 800, color: '#fff' }}>
+                                <div className="flex justify-between items-start mb-6">
+                                    <h2 className="text-[var(--accent-primary)] text-2xl font-bold m-0 leading-tight">{event.name}</h2>
+                                    <span className="px-3 py-1 rounded-lg border border-[var(--accent-secondary)] text-[10px] font-extrabold text-white uppercase whitespace-nowrap ml-2">
                                         {event.type.toUpperCase()}
                                     </span>
                                 </div>
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <p className="line-clamp-4" style={{ color: 'var(--text-secondary)', lineHeight: '1.6', margin: 0, textAlign: 'justify' }}>
+                                <div className="flex-grow mb-6">
+                                    <p className="text-[var(--text-secondary)] text-sm leading-relaxed text-justify line-clamp-4 m-0">
                                         {event.description}
                                     </p>
                                     <button 
                                         onClick={() => navigate(`/event/${event._id}`)}
-                                        style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', padding: 0, marginTop: '8px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
+                                        className="bg-none border-none text-[var(--accent-primary)] p-0 mt-4 cursor-pointer text-xs font-bold flex items-center gap-1 hover:underline"
                                     >
                                         READ MORE <ChevronRight size={14} />
                                     </button>
