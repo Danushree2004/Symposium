@@ -21,7 +21,7 @@ const ParticipantDashboard = () => {
                     setLoading(false);
                     return;
                 }
-                const url = `${API_BASE}/api/users/profile`;
+                const url = '/api/users/profile';
                 console.log('FETCHING FROM: ' + url);
                 const res = await axios.get(url, {
                     headers: { 'x-auth-token': token }

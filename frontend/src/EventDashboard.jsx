@@ -38,12 +38,18 @@ const EventDashboard = () => {
         const fetchEvents = async () => {
             const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
             try {
-                // Use API_BASE which correctly switches between Vercel and localhost
-                const res = await axios.get(`${API_BASE}/api/events`);
+                // Use a relative path to leverage Vercel's rewrites correctly
+                const res = await axios.get("/api/events");
                 console.log("Raw events from server:", res.data);
-                setEvents(res.data);
+                if (Array.isArray(res.data)) {
+                    setEvents(res.data);
+                } else {
+                    console.error("Expected array but got:", typeof res.data);
+                    setEvents([]);
+                }
             } catch (err) {
                 console.error("Fetch error:", err);
+                setEvents([]);
             }
         };
         fetchEvents();
