@@ -15,7 +15,19 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/users/:path*",
+      "destination": "/backend/index.js"
+    },
+    {
+      "source": "/api/events/:path*",
+      "destination": "/backend/index.js"
+    },
+    {
+      "source": "/api/admin/:path*",
+      "destination": "/backend/index.js"
+    },
+    {
+      "source": "/api/certificates/:path*",
       "destination": "/backend/index.js"
     },
     {
