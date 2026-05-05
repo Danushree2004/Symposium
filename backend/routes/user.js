@@ -52,9 +52,14 @@ router.post('/register', async (req, res) => {
       await sendEmail(email, 'Verify your email for STPD ORION\'27', emailHtml);
       console.log(`Verification email sent to ${email}`);
     } catch (emailErr) {
-      console.error('Failed to send verification email:', emailErr.message);
-      // Don't fail the whole registration if email fails, or at least return a better error
-      return res.status(500).json({ msg: 'User created but failed to send verification email. Please contact admin.', error: emailErr.message });
+      console.error('Failed to send verification email:', emailErr);
+      // Log full error for verification in Vercel
+      return res.status(500).json({ 
+        msg: 'User created but failed to send verification email.', 
+        error: emailErr.message,
+        code: emailErr.code,
+        command: emailErr.command 
+      });
     }
 
     res.json({ msg: 'Registration successful. Please check your email to verify your account.' });
