@@ -38,8 +38,8 @@ const EventDashboard = () => {
         const fetchEvents = async () => {
             const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
             try {
-                // Use 127.0.0.1 for consistency with other working pages
-                const res = await axios.get(`${API_BASE}/events`);
+                // Use API_BASE which correctly switches between Vercel and localhost
+                const res = await axios.get(`${API_BASE}/api/events`);
                 console.log("Raw events from server:", res.data);
                 setEvents(res.data);
             } catch (err) {
@@ -67,7 +67,7 @@ const EventDashboard = () => {
         if (file) submitData.append("paymentProof", file);
 
         try {
-            await axios.post(`${API_BASE}/events/register-participation`, submitData, {
+            await axios.post(`${API_BASE}/api/events/register-participation`, submitData, {
                 headers: { 
                     "Content-Type": "multipart/form-data",
                     "x-auth-token": token
