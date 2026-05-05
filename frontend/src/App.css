@@ -156,3 +156,92 @@ html, body {
     }
 }
 
+
+/* ULTRA-RESPONSIVE MOBILE RESET */
+:root {
+  --mobile-padding: 15px;
+}
+
+@media (max-width: 600px) {
+    /* Reset all fixed widths that cause overlapping */
+    * {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Navbar Fix: Mobile Menu Style */
+    nav {
+        padding: 10px !important;
+        height: auto !important;
+    }
+    
+    .nav-container {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 10px !important;
+    }
+
+    .nav-container div {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    /* Hero Section Fix */
+    .hero-title {
+        font-size: 1.8rem !important;
+        line-height: 1.2 !important;
+        margin-top: 20px !important;
+    }
+
+    h2, h3 {
+        font-size: 0.9rem !important;
+        letter-spacing: 1px !important;
+        padding: 5px !important;
+    }
+
+    /* Event Cards Fix (The jhv card in screenshot) */
+    div[class*='glass-card'], .event-card {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 15px !important;
+        display: block !important;
+    }
+
+    /* Force grids to be simple rows */
+    div[style*='display: grid'], 
+    div[style*='display: flex'] {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 15px !important;
+    }
+
+    /* Fix the 'vertical text' / squashed elements */
+    span, div, h1, h2, h3 {
+        width: auto !important;
+        height: auto !important;
+        writing-mode: horizontal-tb !important;
+    }
+
+    /* Modal / Popup Fix (Important for Registration) */
+    div[style*='position: fixed'] > div {
+        width: 92% !important;
+        left: 4% !important;
+        top: 5% !important;
+        transform: none !important;
+        padding: 20px !important;
+        overflow-y: scroll !important;
+    }
+
+    /* Button and Input optimization */
+    button, input, select {
+        width: 100% !important;
+        margin: 5px 0 !important;
+        padding: 12px !important;
+    }
+}
+
