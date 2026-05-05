@@ -93,3 +93,66 @@
     }
 }
 
+
+/* AGGRESSIVE MOBILE FIX - FULL SCREEN WIDTH */
+html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+@media (max-width: 600px) {
+    .container, .nav-container {
+        padding: 0 10px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .hero-title {
+        font-size: 1.8rem !important;
+        word-break: break-word !important;
+        text-align: center !important;
+    }
+
+    /* Force all flex and grid to stack */
+    div[style*='display: grid'], 
+    div[style*='display: flex'] {
+        flex-direction: column !important;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+    }
+
+    /* Fix image and QR boxes overflowing */
+    img, .qr-code, canvas {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Registration Modal Fix */
+    div[style*='position: fixed'] > div {
+        width: 95% !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+        padding: 1rem !important;
+        margin: auto !important;
+        position: relative !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+    }
+
+    /* Input fields and buttons */
+    input, select, textarea, .btn-glow, button {
+        font-size: 16px !important; /* Prevents iOS auto-zoom */
+        margin-bottom: 10px !important;
+        min-height: 44px !important; /* Mobile touch target size */
+    }
+
+    /* Hide redundant decorative elements on narrow mobile */
+    div[style*='zIndex: 9999'], 
+    div[style*='zIndex: 9998'] {
+        display: none !important;
+    }
+}
+
