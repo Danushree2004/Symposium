@@ -12,16 +12,27 @@ const mongoURI = (process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/STPD_Sympo
 
 // Database connection
 const connectDB = async () => {
-  if (mongoose.connection.readyState >= 1) return;
+  if (mongoose.connection.readyState >= 1) {
+    console.log('[DB] Using existing connection');
+    return;
+  }
   
   try {
-    await mongoose.connect(mongoURI, {
-      serverSelectionTimeoutMS: 10000,
+    console.log('[DB] Attempting to connect to Atlas...');
+    // Ensure we use the production URI from Environment Variables
+    const connUri = process.env.MONGO_URI;
+    if (!connUri) {
+      throw new Error('MONGO_URI environment variable is missing!');
+    }
+
+    await mongoose.connect(connUri, {
+      serverSelectionTimeoutMS: 15000, // Increased timeout
       socketTimeoutMS: 45000,
     });
     console.log(`[DB SUCCESS] Connected to Atlas`);
   } catch (err) {
-    console.error('CRITICAL DATABASE ERROR:', err);
+    console.error('CRITICAL DATABASE ERROR:', err.message);
+    throw err; // Throw so the middleware catches it
   }
 };
 
