@@ -430,8 +430,8 @@ const AdminPanel = () => {
                         </div>
                     </div>
 
-                    <div className="glass-card" style={{ padding: 0, overflowX: "auto", minWidth: "1150px" }}>
-                        <table style={{ width: "100%", borderCollapse: "collapse", color: "var(--text-secondary)", minWidth: "1150px" }}>
+                    <div className="glass-card" style={{ padding: 0, overflowX: "auto", width: "100%", WebkitOverflowScrolling: "touch" }}>
+                        <table style={{ width: "100%", borderCollapse: "collapse", color: "var(--text-secondary)", minWidth: "1200px" }}>
                             <thead>
                                 <tr style={{ background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
                                     <th style={{ padding: "1.5rem", textAlign: "left", fontSize: "0.7rem", letterSpacing: "2px" }}>CANDIDATE</th>
@@ -617,8 +617,8 @@ const AdminPanel = () => {
                         </button>
                     </div>
 
-                    <div style={{ overflowX: "auto" }}>
-                        <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 8px" }}>
+                    <div style={{ overflowX: "auto", width: "100%", WebkitOverflowScrolling: "touch" }}>
+                        <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 8px", minWidth: "800px" }}>
                             <thead>
                                 <tr style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.65rem", letterSpacing: "1.5px", textTransform: "uppercase" }}>
                                     <th style={{ textAlign: "left", padding: "12px 20px" }}>EVENT_ID / IDENTITY</th>
