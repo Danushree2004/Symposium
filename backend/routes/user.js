@@ -106,11 +106,16 @@ router.post('/login', async (req, res) => {
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
     const payload = { userId: user._id, role: user.role };
-    const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    const secret = process.env.JWT_SECRET || 'STPD_DEFAULT_SECRET_2025_KEY';
+    const token = jwt.sign(payload, secret, { expiresIn: '7d' });
     res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role, college: user.college } });
   } catch (err) {
     console.error('Login Error:', err);
-    res.status(500).json({ error: err.message, stack: err.stack });
+    res.status(500).json({ 
+      msg: 'Server Error during login', 
+      error: err.message,
+      hasSecret: !!process.env.JWT_SECRET 
+    });
   }
 });
 
