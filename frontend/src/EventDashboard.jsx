@@ -96,11 +96,11 @@ const EventDashboard = () => {
             {/* Dashboard Navigation */}
             <nav style={{ position: 'fixed', top: 0, width: '100%', padding: '1.5rem 2rem', zIndex: 100, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(5, 7, 10, 0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid var(--card-border)' }}>
                 <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-primary)', letterSpacing: '2px' }}>ORION 2K26</div>
-                <div style={{ display: 'flex', gap: '2rem' }}>
-                    {/* <button onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', letterSpacing: '1px' }}>LOGIN / SYNC</button>
-                    <button style={{ background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', letterSpacing: '1px' }} onClick={() => document.getElementById('events').scrollIntoView({ behavior: 'smooth' })}>PROTOCOLS</button> */}
+                {/* <div style={{ display: 'flex', gap: '2rem' }}>
+                   <button onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', letterSpacing: '1px' }}>LOGIN / SYNC</button>
+                    <button style={{ background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', letterSpacing: '1px' }} onClick={() => document.getElementById('events').scrollIntoView({ behavior: 'smooth' })}>PROTOCOLS</button>
                     <button onClick={() => navigate('/admin-login')} style={{ border: '1px solid var(--accent-secondary)', padding: '0.4rem 1rem', borderRadius: '8px', color: 'var(--accent-secondary)', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer' }}>ADMIN ACCESS</button>
-                </div>
+                </div>  */}
             </nav>
 
             {/* Hero Section */}
