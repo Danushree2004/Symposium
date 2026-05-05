@@ -53,12 +53,14 @@ router.post('/register', async (req, res) => {
       console.log(`Verification email sent to ${email}`);
     } catch (emailErr) {
       console.error('Failed to send verification email:', emailErr.message);
+      // Don't fail the whole registration if email fails, or at least return a better error
+      return res.status(500).json({ msg: 'User created but failed to send verification email. Please contact admin.', error: emailErr.message });
     }
 
     res.json({ msg: 'Registration successful. Please check your email to verify your account.' });
   } catch (err) {
     console.error('Registration Error:', err);
-    res.status(500).json({ error: err.message, stack: err.stack });
+    res.status(500).json({ msg: 'Server Error during registration', error: err.message });
   }
 });
 
