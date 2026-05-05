@@ -40,3 +40,56 @@
 .read-the-docs {
   color: #c9d1d9;
 }
+
+/* MOBILE RESPONSIVENESS PATCH */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem !important;
+        width: 100% !important;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem !important;
+        letter-spacing: 2px !important;
+    }
+    
+    .nav-container {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        padding: 1rem !important;
+    }
+    
+    .glass-card {
+        padding: 1.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Stats Grid */
+    div[style*='grid-template-columns: repeat(4'] {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+    
+    /* Layout Grids */
+    div[style*='grid-template-columns: 1fr 2fr'],
+    div[style*='grid-template-columns: 1fr 1fr'] {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+    
+    /* Dashboard Specific */
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    input, select, textarea, button {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .modal-content {
+        width: 95% !important;
+        padding: 1.5rem !important;
+    }
+}
+
