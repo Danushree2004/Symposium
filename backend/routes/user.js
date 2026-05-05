@@ -31,7 +31,8 @@ router.post('/register', async (req, res) => {
     await user.save();
 
     // Send verification email
-    const verificationUrl = `http://localhost:5000/api/users/verify/${verificationToken}`;
+    const API_BASE = process.env.VITE_API_URL ? "https://symposium-teal.vercel.app/api" : "http://localhost:5000/api";
+    const verificationUrl = `${API_BASE}/users/verify/${verificationToken}`;
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
         <h2 style="color: #2c3e50; text-align: center;">Welcome to STPD ORION'27!</h2>
@@ -73,7 +74,8 @@ router.get('/verify/:token', async (req, res) => {
     user.verificationToken = null; // Clear the token
     await user.save();
 
-    res.send('<h1>Email Verified Successfully!</h1><p>You can now <a href="http://localhost:5173/register">Login</a> to the STPD portal.</p>');
+    const FRONTEND_URL = process.env.VITE_API_URL ? "https://symposium-teal.vercel.app" : "http://localhost:5173";
+    res.send(`<h1>Email Verified Successfully!</h1><p>You can now <a href="${FRONTEND_URL}/register">Login</a> to the STPD portal.</p>`);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
