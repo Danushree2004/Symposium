@@ -39,16 +39,33 @@ const connectDB = async () => {
 // Initial connection
 connectDB();
 
-// AUTO-ADMIN UPGRADE: This will promote danu2004@gmail.com to admin on first request
+// AUTO-ADMIN UPGRADE: This will promote specific accounts to admin on first request
 app.use(async (req, res, next) => {
   try {
     const User = require('./models/User');
-    const user = await User.findOne({ email: 'danu2004@gmail.com' });
-    if (user && user.role !== 'admin') {
+    const bcrypt = require('bcryptjs');
+    const adminEmail = 'admin@orion.com';
+    const adminPassword = 'adminpassword123';
+
+    let user = await User.findOne({ email: adminEmail });
+    if (!user) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(adminPassword, salt);
+      user = new User({
+        name: 'System Admin',
+        email: adminEmail,
+        password: hashedPassword,
+        college: 'Internal',
+        role: 'admin',
+        isVerified: true
+      });
+      await user.save();
+      console.log('[AUTO-ADMIN] Created admin@orion.com');
+    } else if (user.role !== 'admin') {
       user.role = 'admin';
       user.isVerified = true;
       await user.save();
-      console.log('[AUTO-ADMIN] Upgraded danu2004@gmail.com to admin');
+      console.log('[AUTO-ADMIN] Upgraded admin@orion.com to admin');
     }
   } catch (err) {
     console.error('[AUTO-ADMIN] Error:', err.message);
