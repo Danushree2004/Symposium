@@ -39,6 +39,23 @@ const connectDB = async () => {
 // Initial connection
 connectDB();
 
+// AUTO-ADMIN UPGRADE: This will promote danu2004@gmail.com to admin on first request
+app.use(async (req, res, next) => {
+  try {
+    const User = require('./models/User');
+    const user = await User.findOne({ email: 'danu2004@gmail.com' });
+    if (user && user.role !== 'admin') {
+      user.role = 'admin';
+      user.isVerified = true;
+      await user.save();
+      console.log('[AUTO-ADMIN] Upgraded danu2004@gmail.com to admin');
+    }
+  } catch (err) {
+    console.error('[AUTO-ADMIN] Error:', err.message);
+  }
+  next();
+});
+
 // Middleware to ensure DB connection for every request (Crucial for Vercel Serverless)
 app.use(async (req, res, next) => {
   await connectDB();
