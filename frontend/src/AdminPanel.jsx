@@ -53,17 +53,17 @@ const AdminPanel = () => {
         const fetchAll = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await axios.get("http://127.0.0.1:5000/admin/registrations", {
+                const res = await axios.get("/api/admin/registrations", {
                     headers: { 'x-auth-token': token }
                 });
                 setParticipations(res.data);
                 
                 // Fetch events for management
-                const eventRes = await axios.get("http://127.0.0.1:5000/events");
+                const eventRes = await axios.get("/api/events");
                 setAllEvents(eventRes.data);
 
                 // Fetch Settings
-                const settingRes = await axios.get("http://127.0.0.1:5000/admin/settings", {
+                const settingRes = await axios.get("/api/admin/settings", {
                     headers: { 'x-auth-token': token }
                 });
                 if (settingRes.data) setSettings(settingRes.data);
@@ -80,7 +80,7 @@ const AdminPanel = () => {
             fd.append("baseAmount", settings.baseAmount);
             if (settingFile) fd.append("qrCode", settingFile);
 
-            const res = await axios.post("http://127.0.0.1:5000/admin/settings", fd, {
+            const res = await axios.post("/api/admin/settings", fd, {
                 headers: { 
                     'x-auth-token': token,
                     'Content-Type': 'multipart/form-data'
@@ -99,7 +99,7 @@ const AdminPanel = () => {
         if (!window.confirm("Are you sure you want to remove the uploaded QR image? This will revert to the generated Smart QR.")) return;
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.delete("http://127.0.0.1:5000/admin/settings/qr", {
+            const res = await axios.delete("/api/admin/settings/qr", {
                 headers: { 'x-auth-token': token }
             });
             alert("QR Image Removed!");
@@ -126,7 +126,7 @@ const AdminPanel = () => {
     const handleAddEvent = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.post("http://127.0.0.1:5000/admin/events", newEventData, {
+            const res = await axios.post("/api/admin/events", newEventData, {
                 headers: { 'x-auth-token': token }
             });
             setAllEvents([...allEvents, res.data]);
@@ -138,7 +138,7 @@ const AdminPanel = () => {
     const handleUpdateEvent = async (id, updatedData) => {
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.patch(`http://127.0.0.1:5000/admin/events/${id}`, updatedData, {
+            const res = await axios.patch(`/api/admin/events/${id}`, updatedData, {
                 headers: { 'x-auth-token': token }
             });
             setAllEvents(allEvents.map(e => e._id === id ? res.data : e));
@@ -150,7 +150,7 @@ const AdminPanel = () => {
         if (!window.confirm("WARNING: Deleting an event will also REMOVE ALL current registrations for it. Continue?")) return;
         try {
             const token = localStorage.getItem("token");
-            await axios.delete(`http://127.0.0.1:5000/admin/events/${id}`, {
+            await axios.delete(`/api/admin/events/${id}`, {
                 headers: { 'x-auth-token': token }
             });
             setAllEvents(allEvents.filter(e => e._id !== id));
@@ -160,7 +160,7 @@ const AdminPanel = () => {
     const handleUpdateResult = async (id, shortlisted, resultStatus) => {
         try {
             const token = localStorage.getItem("token");
-            await axios.patch(`http://127.0.0.1:5000/admin/update-result/${id}`, 
+            await axios.patch(`/api/admin/update-result/${id}`, 
                 { shortlisted, resultStatus }, 
                 { headers: { 'x-auth-token': token } }
             );
@@ -172,7 +172,7 @@ const AdminPanel = () => {
         try {
             const token = localStorage.getItem("token");
             console.log(`Attempting to update status for ${id} to ${status}`);
-            const res = await axios.patch(`http://127.0.0.1:5000/admin/verify-payment/${id}`, { status }, {
+            const res = await axios.patch(`/api/admin/verify-payment/${id}`, { status }, {
                 headers: { 'x-auth-token': token }
             });
             console.log('Update result:', res.data);
@@ -186,7 +186,7 @@ const AdminPanel = () => {
     const handleExport = async (type) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`http://127.0.0.1:5000/admin/export-${type}`, {
+            const response = await axios.get(`/api/admin/export-${type}`, {
                 headers: { 'x-auth-token': token },
                 responseType: 'blob'
             });
