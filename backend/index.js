@@ -55,23 +55,23 @@ app.use((req, res, next) => {
 
 // Define User routes
 const userRouter = require('./routes/user');
-app.use('/users', userRouter);
-console.log('User Router registered at /users');
+app.use('/api/users', userRouter); // Prefixed with /api
+console.log('User Router registered at /api/users');
 
 // Define Event routes
 const eventRouter = require('./routes/event');
-app.use('/events', eventRouter);
-console.log('Event Router registered at /events');
+app.use('/api/events', eventRouter); // Prefixed with /api
+console.log('Event Router registered at /api/events');
 
 // Define Admin routes
 const adminRouter = require('./routes/admin');
-app.use('/admin', adminRouter);
-console.log('Admin Router registered at /admin');
+app.use('/api/admin', adminRouter); // Prefixed with /api
+console.log('Admin Router registered at /api/admin');
 
 // Define Certificate routes
 const certificateRouter = require('./routes/certificate');
-app.use('/certificates', certificateRouter);
-console.log('Certificate Router registered at /certificates');
+app.use('/api/certificates', certificateRouter); // Prefixed with /api
+console.log('Certificate Router registered at /api/certificates');
 
 // Start the server
 if (process.env.NODE_ENV !== 'production') {
