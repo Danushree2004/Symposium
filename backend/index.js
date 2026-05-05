@@ -11,14 +11,27 @@ const PORT = process.env.PORT || 5000;
 const mongoURI = (process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/STPD_Symposium').replace('localhost', '127.0.0.1');
 
 // Database connection
-mongoose.connect(mongoURI, {
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-})
-.then(() => console.log(`[DB SUCCESS] Connected to: ${mongoURI}`))
-.catch(err => {
-  console.error('CRITICAL DATABASE ERROR:', err);
-  // Don't exit, let it retry or show error on request
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) return;
+  
+  try {
+    await mongoose.connect(mongoURI, {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
+    console.log(`[DB SUCCESS] Connected to Atlas`);
+  } catch (err) {
+    console.error('CRITICAL DATABASE ERROR:', err);
+  }
+};
+
+// Initial connection
+connectDB();
+
+// Middleware to ensure DB connection for every request (Crucial for Vercel Serverless)
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
 });
 
 // Middleware
