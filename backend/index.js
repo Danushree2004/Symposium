@@ -74,6 +74,10 @@ app.use('/certificates', certificateRouter);
 console.log('Certificate Router registered at /certificates');
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port: ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port: ${PORT}`);
+  });
+}
+
+module.exports = app;
