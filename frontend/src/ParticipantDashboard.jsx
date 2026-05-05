@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Ticket, Calendar, CheckCircle, XCircle, Award, User, Building, Phone } from "lucide-react";
+import { Ticket, Calendar, CheckCircle, XCircle, Award, User, Building, Phone, Eye } from "lucide-react";
+import CertificatePreview from "./CertificatePreview";
 
 const ParticipantDashboard = () => {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [fetchError, setFetchError] = useState(null);
+    const [showPreview, setShowPreview] = useState(false);
+    const [previewData, setPreviewData] = useState(null);
 
-    const API_BASE = "http://localhost:5000"; // Centralized API address
+    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000"; // Centralized API address
+
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -153,26 +157,57 @@ const ParticipantDashboard = () => {
                                                         <Award size={18} /> {p.resultStatus.toUpperCase()}
                                                     </div>
                                                     {p.resultStatus === 'not shortlisted' && (
-                                                        <button
-                                                            onClick={() => {
-                                                                const token = localStorage.getItem('token');
-                                                                window.open(`http://127.0.0.1:5000/certificates/download/${p._id}?token=${token}`, '_blank');
-                                                            }}
-                                                            style={{
-                                                                background: "linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)",
-                                                                color: "white",
-                                                                border: "none",
-                                                                padding: "6px 12px",
-                                                                borderRadius: "6px",
-                                                                fontSize: "0.7rem",
-                                                                fontWeight: 700,
-                                                                cursor: "pointer",
-                                                                textTransform: "uppercase"
-                                                            }}
-                                                        >
-                                                            Download Certificate
-                                                        </button>
+                                                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '10px' }}>
+                                                             <button
+                                                                onClick={() => {
+                                                                    setPreviewData({
+                                                                        ...p,
+                                                                        user: profile.user,
+                                                                        event: p.event
+                                                                    });
+                                                                    setShowPreview(true);
+                                                                }}
+                                                                style={{
+                                                                    background: "rgba(255,255,255,0.1)",
+                                                                    color: "white",
+                                                                    border: "1px solid rgba(255,255,255,0.2)",
+                                                                    padding: "6px 10px",
+                                                                    borderRadius: "6px",
+                                                                    fontSize: "0.7rem",
+                                                                    fontWeight: 700,
+                                                                    cursor: "pointer",
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    gap: "5px"
+                                                                }}
+                                                            >
+                                                                <Eye size={14} /> View
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    const token = localStorage.getItem('token');
+                                                                    const timestamp = new Date().getTime();
+                                                                    const downloadUrl = `${window.location.protocol}//${window.location.hostname}:5000/certificates/download/${p._id}?token=${token}&v=${timestamp}`;
+                                                                    console.log('Attempting download from:', downloadUrl);
+                                                                    window.open(downloadUrl, '_blank');
+                                                                }}
+                                                                style={{
+                                                                    background: "linear-gradient(135deg, #BB00DB 0%, #3a7bd5 100%)",
+                                                                    color: "white",
+                                                                    border: "none",
+                                                                    padding: "6px 12px",
+                                                                    borderRadius: "6px",
+                                                                    fontSize: "0.7rem",
+                                                                    fontWeight: 700,
+                                                                    cursor: "pointer",
+                                                                    textTransform: "uppercase"
+                                                                }}
+                                                            >
+                                                                Download
+                                                            </button>
+                                                        </div>
                                                     )}
+
                                                     {p.resultStatus.toLowerCase().includes('prize') && (
                                                         <div style={{ fontSize: '0.65rem', opacity: 0.6, color: '#00ff80' }}>
                                                             HARD COPY WILL BE PROVIDED
@@ -190,8 +225,15 @@ const ParticipantDashboard = () => {
                     )}
                 </div>
             </div>
+            
+            <CertificatePreview 
+                isOpen={showPreview} 
+                onClose={() => setShowPreview(false)} 
+                data={previewData} 
+            />
         </div>
     );
 };
+
 
 export default ParticipantDashboard;

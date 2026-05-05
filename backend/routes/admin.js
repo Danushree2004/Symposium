@@ -8,6 +8,126 @@ const adminOnly = require('../middleware/admin');
 const eventAdminOnly = require('../middleware/eventAdmin');
 const sendEmail = require('../utils/sendEmail');
 const ExcelJS = require('exceljs');
+const Settings = require('../models/Settings');
+const multer = require('multer');
+const path = require('path');
+const jimp = require('jimp');
+const { Jimp } = jimp;
+const jsQR = require('jsqr');
+const fs = require('fs');
+
+// Configure multer for QR upload
+const qrStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, 'ADMIN_QR_' + Date.now() + path.extname(file.originalname));
+  }
+});
+const qrUpload = multer({ storage: qrStorage });
+
+// Helper function to extract UPI ID from QR image
+async function extractUpiFromQR(filePath) {
+  try {
+    const image = await Jimp.read(filePath);
+    const { data, width, height } = image.bitmap;
+    const code = jsQR(data, width, height);
+    if (code && code.data) {
+      console.log('[DEBUG] QR Code detected:', code.data);
+      // UPI URLs look like: upi://pay?pa=id@bank&pn=Name...
+      const url = code.data;
+      if (url.startsWith('upi://')) {
+        const urlParams = new URLSearchParams(url.split('?')[1]);
+        return urlParams.get('pa'); // Get the 'pa' (Payment Address) parameter
+      }
+      // If it's just a raw UPI ID (some QRs are simple strings)
+      if (url.includes('@')) {
+        return url.trim();
+      }
+      return null;
+    }
+    console.log('[DEBUG] No QR code found in image');
+    return null;
+  } catch (err) {
+    console.error('QR Extraction Error:', err);
+    return null;
+  }
+}
+
+// Get Symposium Settings
+router.get('/settings', async (req, res) => {
+  try {
+    let settings = await Settings.findOne({ key: 'symposium_config' });
+    if (!settings) {
+      settings = new Settings({ key: 'symposium_config', value: { upiId: '919994645063@ybl', baseAmount: 200 } });
+      await settings.save();
+    }
+    res.json(settings.value);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update Symposium Settings (including QR)
+router.post('/settings', auth, adminOnly, qrUpload.single('qrCode'), async (req, res) => {
+  try {
+    console.log('[DEBUG] Setting Update Body:', req.body);
+    console.log('[DEBUG] Setting Update File:', req.file);
+    let { upiId, baseAmount } = req.body;
+    let settings = await Settings.findOne({ key: 'symposium_config' });
+    
+    if (!settings) {
+      settings = new Settings({ key: 'symposium_config', value: { upiId: '919994645063@ybl', baseAmount: 200 } });
+    }
+
+    // If a file was uploaded, try to extract the UPI ID
+    if (req.file) {
+      settings.value.qrCode = req.file.filename;
+      const extractedUpi = await extractUpiFromQR(path.join(__dirname, '../uploads/', req.file.filename));
+      if (extractedUpi) {
+        console.log('[DEBUG] Auto-extracted UPI ID:', extractedUpi);
+        upiId = extractedUpi; // Override the provided UPI ID with the extracted one
+      }
+    }
+
+    if (upiId) settings.value.upiId = upiId;
+    if (baseAmount) settings.value.baseAmount = Number(baseAmount);
+
+    settings.markModified('value'); // Crucial for Mixed types/Subdocuments
+    settings.updatedAt = Date.now();
+    await settings.save();
+    console.log('[DEBUG] Settings saved:', settings.value);
+    res.json({ msg: 'Settings updated successfully', settings: settings.value });
+  } catch (err) {
+    console.error('[DEBUG] Settings Save Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Remove QR Code image from settings
+router.delete('/settings/qr', auth, adminOnly, async (req, res) => {
+  try {
+    let settings = await Settings.findOne({ key: 'symposium_config' });
+    if (!settings) return res.status(404).json({ msg: 'Settings not found' });
+
+    // Optionally delete file from disk if you want to be thorough
+    if (settings.value.qrCode) {
+      const filePath = path.join(__dirname, '../uploads/', settings.value.qrCode);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    settings.value.qrCode = ""; // Clear the reference
+    settings.markModified('value');
+    await settings.save();
+    
+    res.json({ msg: 'QR Code removed successfully', settings: settings.value });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Get all participations for admin or assigned event admins
 router.get('/registrations', auth, eventAdminOnly, async (req, res) => {
@@ -245,18 +365,48 @@ router.patch('/update-result/:participationId', auth, eventAdminOnly, async (req
 router.patch('/verify-payment/:participationId', auth, adminOnly, async (req, res) => {
   try {
     const { status } = req.body;
+    
+    // 1. Update the participation record
     const registration = await Participation.findByIdAndUpdate(
       req.params.participationId,
       { paymentStatus: status },
       { new: true }
     ).populate('user').populate('event');
 
-    if (registration.user && registration.user.email) {
-      const eventName = registration.event?.name || 'the event';
-      const emailHtml = `<h2>Payment Update: ${eventName}</h2><p>Status: ${status}</p>`;
-      try { await sendEmail(registration.user.email, `Payment Update: ${eventName}`, emailHtml); } catch (err) {}
+    if (registration.user) {
+      // 2. Sync status to the User model
+      await User.findByIdAndUpdate(registration.user._id, {
+        symposiumPaymentStatus: status,
+        symposiumPaid: status === 'verified'
+      });
+
+      // 3. Sync status to ALL other participations for this user
+      await Participation.updateMany(
+        { user: registration.user._id },
+        { paymentStatus: status }
+      );
+
+      // 4. Send email notification
+      if (registration.user.email) {
+        const eventName = registration.event?.name || 'the event';
+        const emailHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+            <h2 style="color: #2c3e50; text-align: center;">Payment ${status === 'verified' ? 'Verified' : 'Status Update'}</h2>
+            <p>Dear ${registration.user.name},</p>
+            <p>Your payment for <strong>STPD ORION'27</strong> has been <strong>${status}</strong>.</p>
+            ${status === 'verified' ? '<p>This payment covers your registration for all events in the symposium. You do not need to pay again for subsequent event registrations.</p>' : ''}
+            <p>Best regards,<br><strong>Team STPD ORION'27</strong></p>
+          </div>
+        `;
+        try { 
+          await sendEmail(registration.user.email, `Payment Status: ${status}`, emailHtml); 
+        } catch (err) {
+          console.error('Email notification failed:', err.message);
+        }
+      }
     }
-    res.json({ msg: 'Payment status updated', registration });
+    
+    res.json({ msg: 'Payment status updated across all records', registration });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

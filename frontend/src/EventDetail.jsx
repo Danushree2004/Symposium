@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { QRCodeSVG } from "qrcode.react";
+import { motion } from "framer-motion";
 import { Ticket, Calendar, MapPin, Users, Upload, Send, ChevronLeft, Trophy, Plus, X, Phone, User as UserIcon, Building, CreditCard } from "lucide-react";
 
 const EventDetail = () => {
     const { eventId } = useParams();
     const navigate = useNavigate();
     const [event, setEvent] = useState(null);
+    const [userPaid, setUserPaid] = useState(false);
+    const [paymentVerified, setPaymentVerified] = useState(false);
+    const [settings, setSettings] = useState({ upiId: "919994645063@ybl", baseAmount: 200, qrCode: "" });
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         teamName: "",
@@ -22,34 +26,61 @@ const EventDetail = () => {
     const [showQR, setShowQR] = useState(false);
 
     // Dynamic UPI URL Generation
-    const upiUrl = event ? `upi://pay?pa=919994645063@ybl&pn=ORION_2K26&am=${event.registrationFee * (teamMembers.length || 1)}&cu=INR&tn=Reg_${event.name.replace(/\s+/g, '_')}` : "";
+    const feePerPerson = Number(settings.baseAmount) || 200;
+    const totalAmount = userPaid ? "0.00" : (feePerPerson * (teamMembers.length || 1)).toFixed(2);
+    // Use URL encoding for name and note to ensure apps like GPay/PhonePe don't get confused
+    const merchantName = encodeURIComponent("ORION 2K27");
+    const transactionNote = encodeURIComponent("Symposium Entry Fee");
+    const upiUrl = event ? `upi://pay?pa=${settings.upiId}&pn=${merchantName}&am=${totalAmount}&cu=INR&tn=${transactionNote}` : "";
 
     useEffect(() => {
-        const fetchEvent = async () => {
+        const fetchEventAndUser = async () => {
+            const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+            const token = localStorage.getItem("token");
             try {
-                const res = await axios.get("http://localhost:5000/events");
-                const selectedEvent = res.data.find(e => e._id === eventId);
+                // Fetch settings
+                const setRes = await axios.get(`${API_BASE}/admin/settings`);
+                if (setRes.data) setSettings(setRes.data);
+
+                // Fetch event details
+                const eventRes = await axios.get(`${API_BASE}/events`);
+                const selectedEvent = eventRes.data.find(e => e._id === eventId);
                 setEvent(selectedEvent);
                 
+                // Fetch current user status to check if already paid
+                if (token) {
+                    const userRes = await axios.get(`${API_BASE}/users/me`, {
+                        headers: { "x-auth-token": token }
+                    });
+                    const status = userRes.data.symposiumPaymentStatus;
+                    // If they have any status other than rejected or null, they've "paid" (or pending)
+                    if (status && status !== 'rejected') {
+                        setUserPaid(true);
+                        setPaymentVerified(status === 'verified');
+                        // Set dummy values for required fields if already paid
+                        setFormData(prev => ({ 
+                            ...prev, 
+                            transactionId: userRes.data.symposiumPaymentRef || "PREVIOUSLY_PAID" 
+                        }));
+                    }
+                }
+
                 // Set registration type based on event type
                 const initialRegType = selectedEvent.type === "team" ? "team" : "individual";
                 setFormData(prev => ({
                     ...prev,
                     registrationType: initialRegType,
-                    teamName: "" // Reset to empty instead of "Single Participant"
+                    teamName: "" 
                 }));
                 
-                // If it's a technical event (usually single), pre-fill 1 member slot
-                // If team, user can add more.
                 setTeamMembers([{ name: "", college: "", phone: "" }]);
-                
                 setLoading(false);
             } catch (err) {
-                console.error("Error fetching event details", err);
+                console.error("Error fetching details", err);
                 setLoading(false);
             }
         };
-        fetchEvent();
+        fetchEventAndUser();
     }, [eventId]);
 
     const addMember = () => {
@@ -79,8 +110,8 @@ const EventDetail = () => {
         }
 
         // Validate Transaction ID (example: alphanumeric, 8-20 characters)
-        const txnPattern = /^[a-zA-Z0-9]{8,24}$/;
-        if (!txnPattern.test(formData.transactionId)) {
+        const txnPattern = /^[a-zA-Z0-9-]{6,24}$/;
+        if (!userPaid && !txnPattern.test(formData.transactionId)) {
             alert("Invalid Transaction ID. Please enter a valid 8-24 character alphanumeric ID.");
             return;
         }
@@ -103,8 +134,14 @@ const EventDetail = () => {
         setSubmitting(true);
         const submitData = new FormData();
         submitData.append("eventId", eventId);
-        submitData.append("transactionId", formData.transactionId);
-        submitData.append("paymentProof", file);
+        if (!userPaid) {
+            submitData.append("transactionId", formData.transactionId);
+            submitData.append("paymentProof", file);
+        } else {
+            // For users who already paid, send placeholder values
+            submitData.append("transactionId", "PAID-VERIFIED-" + Date.now());
+            submitData.append("paymentProof", null);
+        }
 
         // Send the actual registration type
         submitData.append("registrationType", formData.registrationType);
@@ -112,7 +149,8 @@ const EventDetail = () => {
         submitData.append("teamMembersDetails", JSON.stringify(teamMembers));
 
         try {
-            const res = await axios.post("http://localhost:5000/events/register-participation", submitData, {
+            const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+            const res = await axios.post(`${API_BASE}/events/register-participation`, submitData, {
                 headers: { 
                     "Content-Type": "multipart/form-data",
                     "x-auth-token": token 
@@ -258,67 +296,94 @@ const EventDetail = () => {
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                            <button 
-                                type="button" 
-                                onClick={() => setShowQR(!showQR)}
-                                style={{ 
-                                    padding: "0.8rem", 
-                                    borderRadius: "8px", 
-                                    border: "1px solid var(--accent-primary)",
-                                    background: "rgba(0,210,255,0.05)",
-                                    color: "var(--accent-primary)",
-                                    cursor: "pointer",
-                                    fontSize: "0.75rem",
-                                    fontWeight: 800,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    gap: "0.5rem"
-                                }}
-                            >
-                                <CreditCard size={16} /> {showQR ? "HIDE PAYMENT QR" : "SHOW PAYMENT QR (AUTO-AMOUNT)"}
-                            </button>
+                            {!userPaid ? (
+                                <>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setShowQR(!showQR)}
+                                        style={{ 
+                                            padding: "0.8rem", 
+                                            borderRadius: "8px", 
+                                            border: "1px solid var(--accent-primary)",
+                                            background: "rgba(0,210,255,0.05)",
+                                            color: "var(--accent-primary)",
+                                            cursor: "pointer",
+                                            fontSize: "0.75rem",
+                                            fontWeight: 800,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "0.5rem"
+                                        }}
+                                    >
+                                        <CreditCard size={16} /> {showQR ? "HIDE PAYMENT QR" : "SHOW PAYMENT QR (₹200)"}
+                                    </button>
 
-                            {showQR && (
-                                <motion.div 
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    style={{ 
-                                        background: "white", 
-                                        padding: "1.5rem", 
-                                        borderRadius: "16px", 
-                                        display: "flex", 
-                                        flexDirection: "column", 
-                                        alignItems: "center",
-                                        gap: "1rem",
-                                        boxShadow: "0 0 30px rgba(0,210,255,0.3)",
-                                        zIndex: 10 // Ensure it's above other elements
-                                    }}
-                                >
-                                    <div style={{ padding: "10px", background: "white", borderRadius: "8px" }}>
-                                        <QRCodeSVG 
-                                            value={upiUrl} 
-                                            size={200} 
-                                            level="H"
-                                            includeMargin={false}
-                                            fgColor="#000000"
-                                            bgColor="#ffffff"
-                                        />
+                                    {showQR && (
+                                        <motion.div 
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            style={{ 
+                                                background: "white", 
+                                                padding: "1.5rem", 
+                                                borderRadius: "16px", 
+                                                display: "flex", 
+                                                flexDirection: "column", 
+                                                alignItems: "center",
+                                                gap: "1rem",
+                                                boxShadow: "0 0 30px rgba(0,210,255,0.3)",
+                                                zIndex: 10 
+                                            }}
+                                        >
+                                            <div style={{ padding: "10px", background: "white", borderRadius: "8px" }}>
+                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                                                    <QRCodeSVG 
+                                                        value={upiUrl}
+                                                        size={220}
+                                                        level="H"
+                                                        includeMargin={true}
+                                                        imageSettings={{
+                                                            src: "https://www.gstatic.com/images/branding/product/2x/gpay_32dp.png",
+                                                            x: undefined,
+                                                            y: undefined,
+                                                            height: 24,
+                                                            width: 24,
+                                                            excavate: true,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div style={{ textAlign: "center", color: "#000" }}>
+                                                <div style={{ fontWeight: 900, fontSize: "1.2rem", color: "#1a1a1a" }}>₹{totalAmount}</div>
+                                                <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#666", letterSpacing: "1px", marginTop: "4px" }}>ONE-TIME SYMPOSIUM FEE</div>
+                                                <div style={{ fontSize: "0.5rem", color: "#999", marginTop: "8px", wordBreak: 'break-all' }}>UPI ID: {settings.upiId}</div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+
+                                    <input className="input-cyber" type="text" required placeholder="TRANSACTION ID" value={formData.transactionId} onChange={(e) => setFormData({...formData, transactionId: e.target.value})} />
+                                    <div className="input-group">
+                                        <label style={{ fontSize: "0.7rem", opacity: 0.5, marginBottom: "0.5rem", display: "block" }}>PAYMENT PROOF (PDF/IMAGE)</label>
+                                        <input type="file" required className="input-cyber" style={{ padding: "0.6rem" }} onChange={(e) => setFile(e.target.files[0])} />
                                     </div>
-                                    <div style={{ textAlign: "center", color: "#000" }}>
-                                        <div style={{ fontWeight: 900, fontSize: "1.2rem", color: "#1a1a1a" }}>₹{event.registrationFee * (teamMembers.length || 1)}</div>
-                                        <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#666", letterSpacing: "1px", marginTop: "4px" }}>SCAN TO PAY DIRECTLY</div>
-                                        <div style={{ fontSize: "0.5rem", color: "#999", marginTop: "8px" }}>UPI ID: 919994645063@ybl</div>
-                                    </div>
-                                </motion.div>
+                                </>
+                            ) : (
+                                <div style={{ 
+                                    padding: "1rem", 
+                                    borderRadius: "8px", 
+                                    background: "rgba(0, 255, 128, 0.1)", 
+                                    border: "1px solid var(--accent-primary)",
+                                    textAlign: "center",
+                                    color: "var(--accent-primary)",
+                                    fontSize: "0.85rem",
+                                    fontWeight: 700
+                                }}>
+                                    {paymentVerified ? "✓ SYMPOSIUM FEE PAID & VERIFIED" : "⚠ SYMPOSIUM FEE PAYMENT PENDING"}
+                                    <div style={{ fontSize: "0.65rem", opacity: 0.7, marginTop: "5px" }}>You don't need to pay for additional events.</div>
+                                </div>
                             )}
                         </div>
 
-                        <input className="input-cyber" type="text" required placeholder="TRANSACTION ID" value={formData.transactionId} onChange={(e) => setFormData({...formData, transactionId: e.target.value})} />
-                        <div className="input-group">
-                            <label style={{ fontSize: "0.7rem", opacity: 0.5, marginBottom: "0.5rem", display: "block" }}>PAYMENT PROOF (PDF/IMAGE)</label>
-                            <input type="file" required className="input-cyber" style={{ padding: "0.6rem" }} onChange={(e) => setFile(e.target.files[0])} />
-                        </div>
                         <button type="submit" className="btn-glow" style={{ width: "100%", marginTop: "1rem" }} disabled={submitting}>
                             {submitting ? "UPLOADING DATA..." : "SUBMIT REGISTRATION"}
                         </button>

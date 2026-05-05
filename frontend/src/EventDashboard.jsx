@@ -36,9 +36,10 @@ const EventDashboard = () => {
 
     useEffect(() => {
         const fetchEvents = async () => {
+            const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
             try {
                 // Use 127.0.0.1 for consistency with other working pages
-                const res = await axios.get('http://127.0.0.1:5000/events');
+                const res = await axios.get(`${API_BASE}/events`);
                 console.log("Raw events from server:", res.data);
                 setEvents(res.data);
             } catch (err) {
@@ -50,6 +51,7 @@ const EventDashboard = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
         const token = localStorage.getItem("token");
         if (!token) {
             alert("Please login first to register for an event.");
@@ -65,7 +67,7 @@ const EventDashboard = () => {
         if (file) submitData.append("paymentProof", file);
 
         try {
-            await axios.post("http://localhost:5000/events/register-participation", submitData, {
+            await axios.post(`${API_BASE}/events/register-participation`, submitData, {
                 headers: { 
                     "Content-Type": "multipart/form-data",
                     "x-auth-token": token

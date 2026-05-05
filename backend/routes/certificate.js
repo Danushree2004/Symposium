@@ -7,170 +7,125 @@ const User = require('../models/User');
 const Event = require('../models/Event');
 const PDFDocument = require('pdfkit');
 
-// Custom auth middleware that accepts token from header or query param
+// Custom auth middleware
 const certAuth = (req, res, next) => {
-  let token = req.header('x-auth-token');
-  
-  // If no header token, check query parameter
-  if (!token) {
-    token = req.query.token;
-  }
+    let token = req.header('x-auth-token') || req.query.token;
+    if (!token) return res.status(401).json({ msg: 'No token, authorization denied' });
 
-  console.log('[CERT-AUTH] Token received:', token ? 'YES' : 'NO');
-
-  if (!token) {
-    return res.status(401).json({ msg: 'No token, authorization denied' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    console.log('[CERT-AUTH] Decoded Token:', decoded);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    console.error('[CERT-AUTH] Token verification failed:', err.message);
-    res.status(401).json({ msg: 'Token is not valid' });
-  }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+        req.user = decoded;
+        next();
+    } catch (err) {
+        res.status(401).json({ msg: 'Token is not valid' });
+    }
 };
 
-// Generate and download certificate
 router.get('/download/:participationId', certAuth, async (req, res) => {
-  try {
-    const participation = await Participation.findById(req.params.participationId)
-      .populate('event')
-      .populate('user');
-
-    if (!participation) {
-      return res.status(404).json({ msg: 'Participation record not found' });
-    }
-
-    // Verify user owns this participation record
-    if (participation.user._id.toString() !== req.user.userId) {
-      return res.status(403).json({ msg: 'Unauthorized to access this certificate' });
-    }
-
-    // Only allow "Not Shortlisted" participants to download
-    if (participation.resultStatus !== 'not shortlisted') {
-      return res.status(400).json({ msg: 'Certificates are only available for non-shortlisted participants. Awarded participants will receive hard copies.' });
-    }
-
-    const user = participation.user;
-    const event = participation.event;
-
-    // Create PDF document
-    // Explicitly using [841.89, 595.28] which is A4 Landscape in points
-    const doc = new PDFDocument({
-      size: [841.89, 595.28],
-      margin: 0
-    });
-
-    // Set response headers
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="Certificate_${user.name.replace(/\s+/g, '_')}_${event.name.replace(/\s+/g, '_')}.pdf"`);
-
-    // Pipe to response
-    doc.pipe(res);
-
-    // Paths to logos
-    const logoTopPath = path.join(__dirname, '../../frontend/src/assets/WhatsApp_Image_2025-12-17_at_6.27.15_PM-removebg-preview (1).png');
-    const logoBottomPath = path.join(__dirname, '../../frontend/src/assets/WhatsApp_Image_2025-12-17_at_6.27.16_PM-removebg-preview (1) (1).png');
-
-    // Page dimensions (Landscape)
-    const pageWidth = 841.89;
-    const pageHeight = 595.28;
-
-    const purple = '#A100FF';
-    
-    // 1. TOP RIGHT TRIANGLE (LANDSCAPE POSITION)
-    doc.fillColor(purple)
-       .moveTo(pageWidth, 0)
-       .lineTo(pageWidth - 250, 0)
-       .lineTo(pageWidth, 250)
-       .fill();
-    
-    // 2. BOTTOM LEFT TRIANGLE (LANDSCAPE POSITION)
-    doc.fillColor(purple)
-       .moveTo(0, pageHeight)
-       .lineTo(250, pageHeight)
-       .lineTo(0, pageHeight - 250)
-       .fill();
-
-    // 3. LOGOS
     try {
-      // Top Center KEC Logo (Centered on horizontal width)
-      doc.image(logoTopPath, (pageWidth / 2) - 110, 25, { width: 220 });
-      // Bottom Center Kongu Logo
-      doc.image(logoBottomPath, (pageWidth / 2) - 60, pageHeight - 100, { width: 120 });
+        const participation = await Participation.findById(req.params.participationId)
+            .populate('event')
+            .populate('user');
+
+        if (!participation) return res.status(404).json({ msg: 'Participation record not found' });
+        if (participation.user._id.toString() !== req.user.userId) return res.status(403).json({ msg: 'Unauthorized' });
+
+        const { user, event } = participation;
+
+        const doc = new PDFDocument({
+            size: [841.89, 595.28], // A4 Landscape
+            margin: 0
+        });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="Certificate_${user.name.replace(/\s+/g, '_')}.pdf"`);
+        doc.pipe(res);
+
+        const logoBottomPath = path.join(__dirname, '../../frontend/src/assets/WhatsApp_Image_2025-12-17_at_6.27.15_PM-removebg-preview (1).png');
+        const logoTopPath = path.join(__dirname, '../../frontend/src/assets/WhatsApp_Image_2025-12-17_at_6.27.16_PM-removebg-preview (1) (1).png');
+
+        const pageWidth = 841.89;
+        const pageHeight = 595.28;
+        const purple = '#B519D4'; 
+
+        // --- 1. BACKGROUND DESIGN ---
+        doc.fillColor(purple).moveTo(0, 0).lineTo(230, 0).lineTo(0, 230).fill(); 
+        doc.fillColor(purple).circle(pageWidth - 40, 40, 7).fill(); 
+        doc.circle(pageWidth - 75, 40, 7).fill(); 
+        doc.fillColor(purple).moveTo(pageWidth, pageHeight).lineTo(pageWidth - 220, pageHeight).lineTo(pageWidth, pageHeight - 220).fill(); 
+        doc.fillColor(purple).moveTo(0, pageHeight).lineTo(180, pageHeight).lineTo(0, pageHeight - 180).fill(); 
+
+        // --- 2. LOGO TOP (Moved even higher and kept large) ---
+        try {
+            // y: 10 pushes it to the very top edge
+            doc.image(logoTopPath, (pageWidth / 2) - 130, -80, { width: 340 });
+        } catch (e) { console.log("Logo Error"); }
+
+        // --- 3. TITLES (Adjusted Y-coordinates to remove overlap) ---
+        // Department Name - Pushed further down to y: 155 and font size slightly optimized
+        doc.fontSize(22)
+            .font('Times-Italic')
+            .fillColor(purple)
+            .text('Department of Computer Applications', 30, 170, { align: 'center', width: pageWidth });
+
+        // ORION 2K26 Banner - Pushed to y: 200
+        const boxW = 420;
+        doc.fillColor('#050510').rect((pageWidth - boxW) / 1.8, 215, boxW, 60).fill();
+        doc.fontSize(55)
+            .font('Helvetica-Bold')
+            .fillColor('#AEEFFF')
+            .text('ORION 2K26', 30, 220, { align: 'center', width: pageWidth });
+
+        // Certificate Ribbon - Pushed to y: 300
+        doc.fillColor('#FFF4BD').rect((pageWidth - 420) / 2, 300, 420, 45).fill();
+        doc.fontSize(28)
+            .font('Times-Italic')
+            .fillColor('#333')
+            .text('Certificate Of Participation', 10, 308, { align: 'center', width: pageWidth });
+
+        // --- 4. MAIN CONTENT (Justified) ---
+        const contentY = 385;
+        const lineMargin = 110;
+        const textWidth = pageWidth - (lineMargin * 2);
+
+        doc.fillColor('#000')
+            .fontSize(20)
+            .font('Courier') 
+            .text('This is to certify that Mr./ Ms. ', lineMargin, contentY, { 
+                align: 'justify', 
+                width: textWidth, 
+                continued: true,
+                lineGap: 10 
+            })
+            .font('Helvetica-Bold').text(`${user.name.toUpperCase()} `, { continued: true })
+            .font('Courier').text('of ', { continued: true })
+            .font('Helvetica-Bold').text(`${user.college.toUpperCase()} `, { continued: true })
+            .font('Courier').text('has participated in ', { continued: true })
+            .font('Helvetica-Bold').text(`${event.name.toUpperCase()} `, { continued: true })
+            .font('Courier').text('at the National Level Technical Symposium ', { continued: true })
+            .fillColor(purple).font('Helvetica-Bold').text('"ORION 2K26" ', { continued: true })
+            .fillColor('#000').font('Courier').text('held on 5th March 2026, at ', { continued: true })
+            .fillColor(purple).font('Helvetica-Bold').text('KONGU ENGINEERING COLLEGE.', { continued: false });
+
+        // --- 5. SIGNATURES & BOTTOM LOGO ---
+        const sigY = pageHeight - 55;
+
+        try {
+            doc.image(logoBottomPath, (pageWidth / 2) - 50, sigY - 45, { width: 100 });
+        } catch(e) {}
+
+        doc.fontSize(12).font('Helvetica-Bold').fillColor('#000');
+        
+        doc.text('-----------------------------------', 180, sigY);
+        doc.text('FACULTY COORDINATOR', 150, sigY + 15, { width: 200, align: 'center' });
+
+        doc.text('----------------------------', pageWidth - 310, sigY);
+        doc.text('HOD', pageWidth - 350, sigY + 15, { width: 200, align: 'center' });
+
+        doc.end();
     } catch (err) {
-      console.error('Logo missing:', err.message);
+        res.status(500).json({ error: 'Generation failed: ' + err.message });
     }
-
-    // 4. TITLES
-    doc.fontSize(22)
-      .font('Helvetica-Bold')
-      .fill(purple)
-      .text('Department of Computer Applications', 0, 175, { align: 'center', width: pageWidth });
-
-    // ORION 2K26 GLOW BLOCK
-    doc.rect((pageWidth / 2) - 250, 215, 500, 70).fill('#000');
-    doc.fontSize(50)
-      .font('Helvetica-Bold')
-      .fill('#00FFFF')
-      .text('ORION 2K26', 0, 230, { align: 'center', width: pageWidth });
-
-    // Certificate Title
-    doc.fontSize(42)
-      .font('Helvetica-Bold')
-      .fill('#000')
-      .text('Certificate Of Participation', 0, 315, { align: 'center', width: pageWidth });
-
-    // 5. MAIN CONTENT (Landscape alignment)
-    const textX = 80;
-    
-    doc.fontSize(20)
-      .font('Helvetica')
-      .fill('#000')
-      .text('This is to certify that Mr./ Ms. ', textX, 400, { continued: true })
-      .font('Helvetica-Bold').text('   ' + user.name.toUpperCase(), { continued: false });
-    
-    // Line for Name
-    doc.moveTo(330, 420).lineTo(pageWidth - 80, 420).stroke('#000');
-
-    doc.fontSize(20).font('Helvetica').text('of ', textX, 445, { continued: true })
-      .font('Helvetica-Bold').text('   ' + user.college, { continued: true })
-      .font('Helvetica').text(' has participated in', { continued: false });
-
-    // Line for College
-    doc.moveTo(110, 465).lineTo(pageWidth - 280, 465).stroke('#000');
-
-    doc.fontSize(20)
-      .font('Helvetica')
-      .text('the National Level Technical Symposium ', textX, 490, { continued: true })
-      .fill(purple).font('Helvetica-Bold').text('“ORION 2K26”', { continued: true })
-      .fill('#000').font('Helvetica').text(' held on ', { continued: true })
-      .font('Helvetica-Bold').text('5th March 2026', { continued: true })
-      .font('Helvetica').text(', at ', { continued: true })
-      .fill(purple).font('Helvetica-Bold').text('KONGU ENGINEERING COLLEGE.', { continued: false });
-
-    // 6. SIGNATURES (Spread horizontally)
-    const sigY = 545;
-    doc.fontSize(14)
-      .font('Helvetica-Bold')
-      .fill('#000');
-
-    // Left Signature
-    doc.moveTo(150, sigY).lineTo(350, sigY).stroke('#000');
-    doc.text('FACULTY COORDINATOR', 150, sigY + 10, { width: 200, align: 'center' });
-
-    // Right Signature
-    doc.moveTo(pageWidth - 350, sigY).lineTo(pageWidth - 150, sigY).stroke('#000');
-    doc.text('HOD', pageWidth - 350, sigY + 10, { width: 200, align: 'center' });
-
-    doc.end();
-  } catch (err) {
-    console.error('[CERTIFICATE] Error:', err.message);
-    res.status(500).json({ error: 'Certificate generation failed: ' + err.message });
-  }
 });
 
 module.exports = router;

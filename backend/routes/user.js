@@ -56,7 +56,8 @@ router.post('/register', async (req, res) => {
 
     res.json({ msg: 'Registration successful. Please check your email to verify your account.' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Registration Error:', err);
+    res.status(500).json({ error: err.message, stack: err.stack });
   }
 });
 
@@ -99,7 +100,8 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
     res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role, college: user.college } });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Login Error:', err);
+    res.status(500).json({ error: err.message, stack: err.stack });
   }
 });
 
@@ -137,6 +139,16 @@ router.get('/profile', auth, async (req, res) => {
     console.error('[PROFILE] ERROR Message:', err.message);
     console.error('[PROFILE] ERROR Stack:', err.stack);
     res.status(500).json({ error: 'Server error: ' + err.message });
+  }
+});
+
+// Get current user details (alias for specific profile needs)
+router.get('/me', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select('-password');
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

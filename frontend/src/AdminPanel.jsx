@@ -12,6 +12,10 @@ const AdminPanel = () => {
     const [userRole, setUserRole] = useState("");
     const [activeTab, setActiveTab] = useState("registrations");
 
+    // Symposium Settings State
+    const [settings, setSettings] = useState({ upiId: "919994645063@ybl", baseAmount: 200, qrCode: "" });
+    const [settingFile, setSettingFile] = useState(null);
+
     // Event Management State
     const [editingEvent, setEditingEvent] = useState(null);
     const [isAddingEvent, setIsAddingEvent] = useState(false);
@@ -57,10 +61,51 @@ const AdminPanel = () => {
                 // Fetch events for management
                 const eventRes = await axios.get("http://127.0.0.1:5000/events");
                 setAllEvents(eventRes.data);
+
+                // Fetch Settings
+                const settingRes = await axios.get("http://127.0.0.1:5000/admin/settings", {
+                    headers: { 'x-auth-token': token }
+                });
+                if (settingRes.data) setSettings(settingRes.data);
             } catch (err) { alert("Access Required: " + (err.response?.data?.msg || "Unauthorized")); }
         };
         fetchAll();
     }, []);
+
+    const handleSaveSettings = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const fd = new FormData();
+            fd.append("upiId", settings.upiId);
+            fd.append("baseAmount", settings.baseAmount);
+            if (settingFile) fd.append("qrCode", settingFile);
+
+            const res = await axios.post("http://127.0.0.1:5000/admin/settings", fd, {
+                headers: { 
+                    'x-auth-token': token,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            alert("Settings Updated!");
+            setSettings(res.data.settings);
+            setSettingFile(null);
+            // Clear input file
+            const fileInput = document.querySelector('input[type="file"]');
+            if (fileInput) fileInput.value = "";
+        } catch (err) { alert("Failed to save settings"); }
+    };
+
+    const handleRemoveQR = async () => {
+        if (!window.confirm("Are you sure you want to remove the uploaded QR image? This will revert to the generated Smart QR.")) return;
+        try {
+            const token = localStorage.getItem("token");
+            const res = await axios.delete("http://127.0.0.1:5000/admin/settings/qr", {
+                headers: { 'x-auth-token': token }
+            });
+            alert("QR Image Removed!");
+            setSettings(res.data.settings);
+        } catch (err) { alert("Failed to remove QR"); }
+    };
 
     const events = [...new Set(participations.map(p => p.event?.name))].filter(Boolean);
 
@@ -250,6 +295,19 @@ const AdminPanel = () => {
                             }}
                         >
                             EVENT MANAGEMENT
+                        </button>
+                    )}
+                    {userRole === "admin" && (
+                        <button 
+                            onClick={() => setActiveTab("settings")}
+                            style={{ 
+                                padding: "10px 24px", borderRadius: "10px", border: "none", cursor: "pointer",
+                                background: activeTab === "settings" ? "var(--btn-gradient)" : "transparent",
+                                color: activeTab === "settings" ? "white" : "rgba(255,255,255,0.4)",
+                                fontSize: "0.75rem", fontWeight: 700, transition: "all 0.3s ease"
+                            }}
+                        >
+                            SYMPOSIUM SETTINGS
                         </button>
                     )}
                 </div>
@@ -546,7 +604,7 @@ const AdminPanel = () => {
                 </table>
             </div>
             </>
-            ) : (
+            ) : activeTab === "events" ? (
                 <div className="glass-card" style={{ padding: "2rem", border: "1px solid rgba(255,255,255,0.05)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
                         <h2 style={{ color: "white", margin: 0, fontSize: "1.2rem", fontWeight: 700, letterSpacing: "1px" }}>EVENT CATALOGUE</h2>
@@ -594,6 +652,79 @@ const AdminPanel = () => {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            ) : (
+                <div className="glass-card" style={{ padding: "3rem", border: "1px solid rgba(255,255,255,0.05)", maxWidth: "800px", margin: "0 auto" }}>
+                    <h2 style={{ color: "white", marginBottom: "2rem", fontSize: "1.5rem", fontWeight: 700 }}>SYSTEM CONFIGURATION</h2>
+                    
+                    <div style={{ display: "grid", gap: "2rem" }}>
+                        <div className="input-group">
+                            <label style={{ display: "block", color: "#888", fontSize: "0.7rem", marginBottom: "8px", fontWeight: 700 }}>OFFICIAL UPI ID</label>
+                            <input 
+                                className="input-field" 
+                                style={{ background: "#1a1a1e", border: "1px solid #333", color: "white", padding: "15px", borderRadius: "10px", width: "100%" }}
+                                value={settings.upiId}
+                                onChange={(e) => setSettings({...settings, upiId: e.target.value})}
+                                placeholder="Auto-extracted from QR if uploaded"
+                            />
+                        </div>
+
+                        <div className="input-group">
+                            <label style={{ display: "block", color: "#888", fontSize: "0.7rem", marginBottom: "8px", fontWeight: 700 }}>BASE AMOUNT PER PERSON (₹)</label>
+                            <input 
+                                className="input-field"
+                                type="number"
+                                style={{ background: "#1a1a1e", border: "1px solid #333", color: "white", padding: "15px", borderRadius: "10px", width: "100%" }}
+                                value={settings.baseAmount}
+                                onChange={(e) => setSettings({...settings, baseAmount: e.target.value})}
+                            />
+                        </div>
+
+                        <div className="input-group">
+                            <label style={{ display: "block", color: "#888", fontSize: "0.7rem", marginBottom: "8px", fontWeight: 700 }}>PAYMENT QR CODE (IMAGE)</label>
+                            {settings.qrCode && (
+                                <div style={{ marginBottom: "1rem", position: "relative", width: "150px" }}>
+                                    <p style={{ fontSize: "0.6rem", color: "var(--accent-primary)" }}>CURRENT QR:</p>
+                                    <img src={`http://127.0.0.1:5000/uploads/${settings.qrCode}`} alt="Current QR" style={{ width: "150px", borderRadius: "10px", border: "1px solid #333" }} />
+                                    <button 
+                                        onClick={handleRemoveQR}
+                                        style={{
+                                            position: "absolute",
+                                            top: "20px",
+                                            right: "-10px",
+                                            background: "rgba(220, 38, 38, 0.9)",
+                                            border: "none",
+                                            color: "white",
+                                            borderRadius: "50%",
+                                            width: "25px",
+                                            height: "25px",
+                                            cursor: "pointer",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            boxShadow: "0 4px 10px rgba(0,0,0,0.5)"
+                                        }}
+                                        title="Remove QR Image"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </div>
+                            )}
+                            <input 
+                                type="file"
+                                style={{ background: "#1a1a1e", border: "1px solid #333", color: "white", padding: "15px", borderRadius: "10px", width: "100%" }}
+                                onChange={(e) => setSettingFile(e.target.files[0])}
+                            />
+                        </div>
+
+                        <button 
+                            onClick={handleSaveSettings}
+                            className="btn-glow" 
+                            style={{ padding: "15px", fontWeight: 700, marginTop: "1rem" }}
+                        >
+                            DEPLOY CONFIGURATION
+                        </button>
                     </div>
                 </div>
             )}

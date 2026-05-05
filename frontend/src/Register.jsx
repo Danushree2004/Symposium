@@ -13,9 +13,10 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
         setStatusMsg(isLogin ? "Authenticating..." : "Creating profile & sending verification email...");
         try {
-            const url = isLogin ? "http://localhost:5000/users/login" : "http://localhost:5000/users/register";
+            const url = isLogin ? `${API_BASE}/users/login` : `${API_BASE}/users/register`;
             const res = await axios.post(url, formData);
             if (isLogin) {
                 setStatusMsg("Success! Redirecting...");

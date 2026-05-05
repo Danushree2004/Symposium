@@ -7,10 +7,12 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Force IPv4 for local MongoDB connections to avoid DNS resolution issues in Node.js 18+
+const mongoURI = (process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/STPD_Symposium').replace('localhost', '127.0.0.1');
+
 // Database connection
-const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/STPD_Symposium';
 mongoose.connect(mongoURI, {
-  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
 })
 .then(() => console.log(`[DB SUCCESS] Connected to: ${mongoURI}`))

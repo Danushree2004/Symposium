@@ -10,8 +10,9 @@ const AdminLogin = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
         try {
-            const res = await axios.post("http://localhost:5000/users/login", formData);
+            const res = await axios.post(`${API_BASE}/users/login`, formData);
             if (res.data.user.role === "admin" || res.data.user.role === "event-admin") {
                 localStorage.setItem("user", JSON.stringify(res.data.user));
                 localStorage.setItem("token", res.data.token);

@@ -98,6 +98,31 @@ router.post('/register-participation', auth, upload.single('paymentProof'), asyn
       return res.status(400).json({ msg: 'Individual registration only allows one member.' });
     }
 
+    // Check if user has already paid the symposium fee (Verified or Pending)
+    const isFirstTimeRegistration = !currentUser.symposiumPaymentStatus || currentUser.symposiumPaymentStatus === 'rejected';
+    
+    // If it's not the first time and they already have a non-rejected status, 
+    // we don't need a new payment, but we need to link it.
+    let paymentScreenshot = '';
+    let paymentRef = '';
+    let paymentStatus = 'pending';
+
+    if (!isFirstTimeRegistration) {
+      paymentScreenshot = currentUser.symposiumPaymentScreenshot;
+      paymentRef = currentUser.symposiumPaymentRef;
+      paymentStatus = currentUser.symposiumPaymentStatus;
+    } else {
+      paymentScreenshot = req.file ? req.file.filename : '';
+      paymentRef = transactionId;
+      paymentStatus = 'pending';
+
+      // Update user with initial payment details
+      currentUser.symposiumPaymentStatus = 'pending';
+      currentUser.symposiumPaymentRef = paymentRef;
+      currentUser.symposiumPaymentScreenshot = paymentScreenshot;
+      await currentUser.save();
+    }
+
     let participation = new Participation({
       user: userId,
       event: eventId,
@@ -105,9 +130,9 @@ router.post('/register-participation', auth, upload.single('paymentProof'), asyn
       rollNumber: rollNumber, // Use the user's permanent roll number
       registrationType: registrationType || (parsedMembers.length > 1 ? 'team' : 'individual'),
       teamMembersDetails: parsedMembers,
-      paymentRef: transactionId,
-      paymentScreenshot: req.file ? req.file.filename : '', // Save just filename
-      paymentStatus: 'pending'
+      paymentRef: paymentRef,
+      paymentScreenshot: paymentScreenshot,
+      paymentStatus: paymentStatus
     });
     
     const saved = await participation.save();
