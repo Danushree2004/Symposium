@@ -342,18 +342,18 @@ const AdminPanel = () => {
                         </div>
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem", background: "rgba(255,255,255,0.02)", padding: "1.5rem", borderRadius: "16px", border: "1px solid rgba(255,255,255,0.05)" }}>
+                    <div className="filter-container">
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                             <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#00ff80", boxShadow: "0 0 10px #00ff80" }}></div>
                             <p style={{ color: "var(--text-secondary)", letterSpacing: "2px", margin: 0, fontSize: "0.7rem", fontWeight: 700 }}>{participations.length} REGISTRATIONS TRACKED</p>
                         </div>
                         
-                        <div style={{ display: "flex", gap: "0.8rem", background: "rgba(0,0,0,0.2)", padding: "8px", borderRadius: "12px" }}>
+                        <div className="filter-controls">
                             <div style={{ position: "relative" }}>
                                 <Search size={16} style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", opacity: 0.3 }} />
                                 <input 
                                     className="input-field" 
-                                    style={{ paddingLeft: "42px", width: "220px", height: "45px", fontSize: "0.75rem", border: "1px solid rgba(255,255,255,0.05)", background: "#111" }} 
+                                    style={{ paddingLeft: "42px", width: "100%", height: "45px", fontSize: "0.75rem", border: "1px solid rgba(255,255,255,0.05)", background: "#111" }} 
                                     placeholder="SEARCH NAME / EMAIL..." 
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)} 
@@ -365,7 +365,7 @@ const AdminPanel = () => {
                                 <select 
                                     className="input-field" 
                                     style={{ 
-                                        paddingLeft: "42px", width: "160px", height: "45px", fontSize: "0.75rem", 
+                                        paddingLeft: "42px", width: "100%", height: "45px", fontSize: "0.75rem", 
                                         cursor: "pointer", appearance: "none", border: "1px solid rgba(255,255,255,0.05)", 
                                         background: "#111", color: "white" 
                                     }}
@@ -384,7 +384,7 @@ const AdminPanel = () => {
                                 <select 
                                     className="input-field" 
                                     style={{ 
-                                        paddingLeft: "42px", width: "180px", height: "45px", fontSize: "0.75rem", 
+                                        paddingLeft: "42px", width: "100%", height: "45px", fontSize: "0.75rem", 
                                         cursor: "pointer", appearance: "none", border: "1px solid rgba(255,255,255,0.05)", 
                                         background: "#111", color: "white" 
                                     }}
@@ -397,6 +397,8 @@ const AdminPanel = () => {
                                     ))}
                                 </select>
                             </div>
+                        </div>
+                    </div>
 
                             {(searchTerm || filter !== "all" || eventFilter !== "all") && (
                                 <button 

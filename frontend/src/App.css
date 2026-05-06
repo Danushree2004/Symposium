@@ -180,6 +180,53 @@ table td {
     }
 }
 
+/* ADMIN PANEL FILTERS RESPONSIVE */
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    background: rgba(255,255,255,0.02);
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.filter-controls {
+    display: flex;
+    gap: 0.8rem;
+    background: rgba(0,0,0,0.2);
+    padding: 8px;
+    border-radius: 12px;
+}
+
+@media (max-width: 1024px) {
+    .filter-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.5rem;
+    }
+    
+    .filter-controls {
+        flex-wrap: wrap;
+    }
+    
+    .filter-controls > div {
+        flex: 1;
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 600px) {
+    .filter-controls > div {
+        min-width: 100%;
+    }
+    
+    .filter-controls {
+        padding: 15px;
+    }
+}
+
 /* AGGRESSIVE MOBILE FIX - FULL SCREEN WIDTH */
 html, body {
     overflow-x: hidden !important;
