@@ -414,8 +414,8 @@ const AdminPanel = () => {
                                 </select>
                             </div>
                         </div>
-                    </div>
 
+                        <div style={{ display: "flex", gap: "0.8rem", width: "100%", flexWrap: "wrap", justifyContent: "flex-end" }}>
                             {(searchTerm || filter !== "all" || eventFilter !== "all") && (
                                 <button 
                                     onClick={() => {
@@ -424,7 +424,7 @@ const AdminPanel = () => {
                                         setEventFilter("all");
                                     }}
                                     className="btn-glow"
-                                    style={{ padding: "0 20px", background: "rgba(255, 64, 128, 0.15)", border: "1px solid rgba(255, 64, 128, 0.4)", borderRadius: "8px", color: "#ff4080", fontSize: "0.65rem", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px", transition: "all 0.3s ease" }}
+                                    style={{ padding: "0 20px", background: "rgba(255, 64, 128, 0.15)", border: "1px solid rgba(255, 64, 128, 0.4)", borderRadius: "8px", color: "#ff4080", fontSize: "0.65rem", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px", transition: "all 0.3s ease", height: "45px" }}
                                 >
                                     <RotateCcw size={14} /> RESET
                                 </button>
