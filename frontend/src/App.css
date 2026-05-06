@@ -115,6 +115,71 @@
 }
 
 
+/* DYNAMIC RESPONSIVE TYPOGRAPHY */
+:root {
+    /* Fluid typography scales: min-size, preferred-size (viewport based), max-size */
+    --fluid-h1: clamp(1.8rem, 5vw + 1rem, 3.5rem);
+    --fluid-h2: clamp(1.4rem, 4vw + 0.8rem, 2.8rem);
+    --fluid-h3: clamp(1.1rem, 3vw + 0.5rem, 1.8rem);
+    --fluid-body: clamp(0.85rem, 1.5vw + 0.2rem, 1.05rem);
+    --fluid-small: clamp(0.65rem, 1vw + 0.1rem, 0.85rem);
+}
+
+html {
+    font-size: 16px; /* Base size */
+}
+
+body {
+    font-size: var(--fluid-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, .hero-title {
+    font-size: var(--fluid-h1) !important;
+}
+
+h2 {
+    font-size: var(--fluid-h2) !important;
+}
+
+h3 {
+    font-size: var(--fluid-h3) !important;
+}
+
+p, span, label, input, select {
+    font-size: var(--fluid-body);
+}
+
+.small-text, .caption {
+    font-size: var(--fluid-small) !important;
+}
+
+/* TABLE DYNAMIC TYPOGRAPHY */
+table th {
+    font-size: var(--fluid-small) !important;
+}
+
+table td {
+    font-size: var(--fluid-body) !important;
+}
+
+/* MOBILE OVERRIDES FOR FONT FLEXIBILITY */
+@media (max-width: 600px) {
+    body {
+        font-size: 14px; /* Slightly smaller base for very small screens */
+    }
+    
+    .glass-card {
+        padding: 1rem !important;
+    }
+    
+    /* Ensure action buttons don't have humongous text */
+    button {
+        font-size: clamp(0.8rem, 2vw, 1rem) !important;
+    }
+}
+
 /* AGGRESSIVE MOBILE FIX - FULL SCREEN WIDTH */
 html, body {
     overflow-x: hidden !important;
