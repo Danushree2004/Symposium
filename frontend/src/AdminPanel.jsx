@@ -350,10 +350,27 @@ const AdminPanel = () => {
                         
                         <div className="filter-controls">
                             <div style={{ position: "relative" }}>
-                                <Search size={16} style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", opacity: 0.3 }} />
+                                <Search size={16} style={{ 
+                                    position: "absolute", 
+                                    left: "15px", 
+                                    top: "50%", 
+                                    transform: "translateY(-50%)", 
+                                    opacity: 0.5,
+                                    zIndex: 2,
+                                    pointerEvents: "none",
+                                    color: "var(--accent-primary)"
+                                }} />
                                 <input 
                                     className="input-field" 
-                                    style={{ paddingLeft: "42px", width: "100%", height: "45px", fontSize: "0.75rem", border: "1px solid rgba(255,255,255,0.05)", background: "#111" }} 
+                                    style={{ 
+                                        paddingLeft: "45px", 
+                                        width: "100%", 
+                                        height: "45px", 
+                                        fontSize: "0.75rem", 
+                                        border: "1px solid rgba(255,255,255,0.05)", 
+                                        background: "#111",
+                                        position: "relative"
+                                    }} 
                                     placeholder="SEARCH NAME / EMAIL..." 
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)} 
@@ -361,13 +378,29 @@ const AdminPanel = () => {
                             </div>
 
                             <div style={{ position: "relative" }}>
-                                <Filter size={16} style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", opacity: 0.3 }} />
+                                <Filter size={16} style={{ 
+                                    position: "absolute", 
+                                    left: "15px", 
+                                    top: "50%", 
+                                    transform: "translateY(-50%)", 
+                                    opacity: 0.5,
+                                    zIndex: 2,
+                                    pointerEvents: "none",
+                                    color: "var(--accent-primary)"
+                                }} />
                                 <select 
                                     className="input-field" 
                                     style={{ 
-                                        paddingLeft: "42px", width: "100%", height: "45px", fontSize: "0.75rem", 
-                                        cursor: "pointer", appearance: "none", border: "1px solid rgba(255,255,255,0.05)", 
-                                        background: "#111", color: "white" 
+                                        paddingLeft: "45px", 
+                                        width: "100%", 
+                                        height: "45px", 
+                                        fontSize: "0.75rem", 
+                                        cursor: "pointer", 
+                                        appearance: "none", 
+                                        border: "1px solid rgba(255,255,255,0.05)", 
+                                        background: "#111", 
+                                        color: "white",
+                                        position: "relative"
                                     }}
                                     value={filter}
                                     onChange={(e) => setFilter(e.target.value)}
@@ -380,13 +413,29 @@ const AdminPanel = () => {
                             </div>
 
                             <div style={{ position: "relative" }}>
-                                <FileText size={16} style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", opacity: 0.3 }} />
+                                <FileText size={16} style={{ 
+                                    position: "absolute", 
+                                    left: "15px", 
+                                    top: "50%", 
+                                    transform: "translateY(-50%)", 
+                                    opacity: 0.5,
+                                    zIndex: 2,
+                                    pointerEvents: "none",
+                                    color: "var(--accent-primary)"
+                                }} />
                                 <select 
                                     className="input-field" 
                                     style={{ 
-                                        paddingLeft: "42px", width: "100%", height: "45px", fontSize: "0.75rem", 
-                                        cursor: "pointer", appearance: "none", border: "1px solid rgba(255,255,255,0.05)", 
-                                        background: "#111", color: "white" 
+                                        paddingLeft: "45px", 
+                                        width: "100%", 
+                                        height: "45px", 
+                                        fontSize: "0.75rem", 
+                                        cursor: "pointer", 
+                                        appearance: "none", 
+                                        border: "1px solid rgba(255,255,255,0.05)", 
+                                        background: "#111", 
+                                        color: "white",
+                                        position: "relative"
                                     }}
                                     value={eventFilter}
                                     onChange={(e) => setEventFilter(e.target.value)}
@@ -514,32 +563,43 @@ const AdminPanel = () => {
                                                     className="btn-glow"
                                                     onClick={() => {
                                                         const screenshot = p.paymentScreenshot;
-                                                        if (screenshot && screenshot.startsWith('data:')) {
-                                                            const win = window.open();
-                                                            if (win) {
-                                                                win.document.write(`
-                                                                    <html>
-                                                                        <head>
-                                                                            <title>Payment Proof</title>
-                                                                            <style>
-                                                                                body { margin: 0; background: #0d0d10; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-                                                                                img { max-width: 100%; max-height: 100vh; object-fit: contain; }
-                                                                            </style>
-                                                                        </head>
-                                                                        <body>
-                                                                            <img src="${screenshot}" />
-                                                                        </body>
-                                                                    </html>
-                                                                `);
-                                                                win.document.close();
-                                                            } else {
-                                                                alert("Please allow popups to view the proof");
+                                                        if (!screenshot) {
+                                                            alert("No screenshot available");
+                                                            return;
+                                                        }
+
+                                                        if (screenshot.startsWith('data:')) {
+                                                            try {
+                                                                // Use an iframe in the new window for more consistent Base64 loading
+                                                                const win = window.open("", "_blank");
+                                                                if (win) {
+                                                                    win.document.write(`
+                                                                        <!DOCTYPE html>
+                                                                        <html>
+                                                                            <head>
+                                                                                <title>Payment Proof</title>
+                                                                                <style>
+                                                                                    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+                                                                                    img { max-width: 100%; max-height: 100%; object-fit: contain; }
+                                                                                </style>
+                                                                            </head>
+                                                                            <body>
+                                                                                <img src="${screenshot}" alt="Payment Proof" />
+                                                                            </body>
+                                                                        </html>
+                                                                    `);
+                                                                    win.document.close();
+                                                                } else {
+                                                                    alert("Popup blocked! Please allow popups for this site.");
+                                                                }
+                                                            } catch (e) {
+                                                                console.error("Popup Error:", e);
+                                                                // Fallback: If popup fails, try direct data URL (might be blocked by browsers)
+                                                                window.open(screenshot, "_blank");
                                                             }
-                                                        } else if (screenshot) {
+                                                        } else {
                                                             const fileUrl = `/api/uploads/${screenshot}`;
-                                                            const isDoc = screenshot.toLowerCase().endsWith('.doc') || screenshot.toLowerCase().endsWith('.docx');
-                                                            const finalUrl = isDoc ? `https://docs.google.com/viewer?url=${window.location.origin}${fileUrl}&embedded=true` : fileUrl;
-                                                            window.open(finalUrl, '_blank');
+                                                            window.open(fileUrl, '_blank');
                                                         }
                                                     }}
                                                     style={{ padding: '4px 8px', fontSize: '0.6rem', width: '150px' }}
