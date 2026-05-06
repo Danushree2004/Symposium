@@ -511,10 +511,16 @@ const AdminPanel = () => {
                                                     type="button"
                                                     className="btn-glow"
                                                     onClick={() => {
-                                                        const fileUrl = p.paymentScreenshot.startsWith('data:') ? p.paymentScreenshot : `/api/uploads/${p.paymentScreenshot}`;
-                                                        const isDoc = !p.paymentScreenshot.startsWith('data:') && (p.paymentScreenshot.toLowerCase().endsWith('.doc') || p.paymentScreenshot.toLowerCase().endsWith('.docx'));
-                                                        const finalUrl = isDoc ? `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true` : fileUrl;
-                                                        window.open(finalUrl, '_blank');
+                                                        if (p.paymentScreenshot.startsWith('data:')) {
+                                                            const win = window.open();
+                                                            win.document.write(`<title>Payment Proof</title><body style="margin:0;background:#0d0d10;display:flex;align-items:center;justify-content:center;"><img src="${p.paymentScreenshot}" style="max-width:100%;max-height:100vh;object-fit:contain;"/></body>`);
+                                                            win.document.close();
+                                                        } else {
+                                                            const fileUrl = `/api/uploads/${p.paymentScreenshot}`;
+                                                            const isDoc = p.paymentScreenshot.toLowerCase().endsWith('.doc') || p.paymentScreenshot.toLowerCase().endsWith('.docx');
+                                                            const finalUrl = isDoc ? `https://docs.google.com/viewer?url=${window.location.origin}${fileUrl}&embedded=true` : fileUrl;
+                                                            window.open(finalUrl, '_blank');
+                                                        }
                                                     }}
                                                     style={{ padding: '4px 8px', fontSize: '0.6rem', width: '150px' }}
                                                 >
