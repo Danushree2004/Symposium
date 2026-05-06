@@ -716,24 +716,26 @@ const AdminPanel = () => {
                                         onClick={handleRemoveQR}
                                         style={{
                                             position: "absolute",
-                                            top: "15px",
+                                            top: "-8px",
                                             right: "-8px",
                                             background: "#ef4444",
-                                            border: "none",
+                                            border: "2px solid #0d0d10",
                                             color: "white",
                                             borderRadius: "50%",
-                                            width: "22px",
-                                            height: "22px",
+                                            width: "24px",
+                                            height: "24px",
                                             cursor: "pointer",
                                             display: "flex",
                                             alignItems: "center",
                                             justifyContent: "center",
-                                            boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
-                                            zIndex: 5
+                                            boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
+                                            zIndex: 10,
+                                            padding: 0,
+                                            lineHeight: 1
                                         }}
                                         title="Remove QR Image"
                                     >
-                                        <X size={14} />
+                                        <X size={14} strokeWidth={3} />
                                     </button>
                                 </div>
                             )}
