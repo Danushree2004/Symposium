@@ -415,7 +415,8 @@ const AdminPanel = () => {
                             </div>
                         </div>
 
-                        <div style={{ display: "flex", gap: "0.8rem", width: "100%", flexWrap: "wrap", justifyContent: "flex-end" }}>
+                        {/* Search/Export Action Group */}
+                        <div style={{ display: "flex", gap: "0.8rem", width: "100%", flexWrap: "wrap", justifyContent: "flex-end", marginTop: "1rem" }}>
                             {(searchTerm || filter !== "all" || eventFilter !== "all") && (
                                 <button 
                                     onClick={() => {
@@ -459,15 +460,15 @@ const AdminPanel = () => {
                                     <th style={{ padding: "1.5rem", textAlign: "right", fontSize: "0.7rem", letterSpacing: "2px" }}>OPERATIONS</th>
                                 </tr>
                             </thead>
-                    <tbody>
-                        {filteredData.map(p => (
-                            <tr key={p._id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)", transition: "background 0.3s" }} onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.02)"} onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}>
-                                <td style={{ padding: "1.5rem", minWidth: "250px" }}>
-                                    <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.9rem" }}>{p.user?.name}</div>
-                                    <div style={{ fontSize: "0.75rem", opacity: 0.7, color: "#fff" }}>{p.user?.email}</div>
-                                    <div style={{ fontSize: "0.75rem", opacity: 0.7, color: "#fff" }}>{p.user?.college}</div>
-                                    {p.user?.phone && <div style={{ fontSize: "0.75rem", color: "var(--accent-secondary)", fontWeight: 700 }}>{p.user?.phone}</div>}
-                                </td>
+                            <tbody>
+                                {filteredData.map(p => (
+                                    <tr key={p._id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)", transition: "background 0.3s" }} onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.02)"} onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}>
+                                        <td style={{ padding: "1.5rem", minWidth: "250px" }}>
+                                            <div style={{ color: "#fff", fontWeight: 700, fontSize: "0.9rem" }}>{p.user?.name}</div>
+                                            <div style={{ fontSize: "0.75rem", opacity: 0.7, color: "#fff" }}>{p.user?.email}</div>
+                                            <div style={{ fontSize: "0.75rem", opacity: 0.7, color: "#fff" }}>{p.user?.college}</div>
+                                            {p.user?.phone && <div style={{ fontSize: "0.75rem", color: "var(--accent-secondary)", fontWeight: 700 }}>{p.user?.phone}</div>}
+                                        </td>
                                 <td style={{ padding: "1.5rem" }}>
                                     <div style={{ color: "var(--accent-secondary)", fontSize: "0.85rem", fontWeight: 700 }}>{p.event?.name}</div>
                                     <div style={{ fontSize: "0.75rem", color: "#00ff80", fontWeight: 700, marginTop: "4px" }}>REG NO: {p.rollNumber || "N/A"}</div>
