@@ -235,7 +235,13 @@ const EventDashboard = () => {
                     </div>
                 </div>
                 
-                <div className="event-grid" style={{ marginBottom: '10rem' }}>
+                <div className="event-grid" style={{ 
+                    marginBottom: '10rem',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))',
+                    gap: '2rem',
+                    padding: '0 10px'
+                }}>
                     {events.filter(e => e.category === 'technical' || !e.category).length > 0 ? (
                         events.filter(e => e.category === 'technical' || !e.category).map((event, index) => (
                             <motion.div 
@@ -312,7 +318,12 @@ const EventDashboard = () => {
                     </div>
                 </div>
 
-                <div className="event-grid">
+                <div className="event-grid" style={{ 
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))',
+                    gap: '2rem',
+                    padding: '0 10px'
+                }}>
                     {events.filter(e => e.category === 'cultural').length > 0 ? (
                         events.filter(e => e.category === 'cultural').map((event, index) => (
                             <motion.div 
