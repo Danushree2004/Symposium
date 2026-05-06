@@ -538,13 +538,13 @@ const AdminPanel = () => {
                                                         if (screenshot.startsWith('data:')) {
                                                             const win = window.open();
                                                             if (win) {
-                                                                win.document.write(`<html><head><title>Payment Proof</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;"><img src="${screenshot}" style="max-width:100\%;max-height:100\%;object-fit:contain;cursor:zoom-in" onclick="this.style.maxHeight='none';this.style.maxWidth='none';this.style.cursor='zoom-out'" /></body></html>`);
+                                                                win.document.write(`<html><head><title>Payment Proof</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;"><img src="${screenshot}" style="max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in" onclick="this.style.maxHeight='none';this.style.maxWidth='none';this.style.cursor='zoom-out'" /></body></html>`);
                                                                 win.document.close();
                                                             } else {
                                                                 alert("Popup blocked! Please allow popups.");
                                                             }
                                                         } else {
-                                                            window.open(\`/api/uploads/\${screenshot}\`, '_blank');
+                                                            window.open(`/api/uploads/${screenshot}`, '_blank');
                                                         }
                                                     }}
                                                     style={{ padding: '4px 8px', fontSize: '0.6rem', width: '150px' }}
