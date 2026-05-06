@@ -15,10 +15,16 @@ const App = () => {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
+    const checkTouch = () => {
+      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    };
+    checkTouch();
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
@@ -32,43 +38,45 @@ const App = () => {
 
   return (
     <div className="min-h-screen" style={{ width: '100%', overflowX: 'hidden' }}>
-      {/* Project-wide Custom Mouse Pointer */}
-      <motion.div 
-          animate={{ x: mousePos.x - 10, y: mousePos.y - 10 }}
-          className="cursor-glow"
-          transition={{ type: "spring", damping: 30, stiffness: 200, mass: 0.5 }}
-          style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '20px',
-              height: '20px',
-              background: 'radial-gradient(circle, var(--accent-primary) 0%, transparent 80%)',
-              borderRadius: '50%',
-              pointerEvents: 'none',
-              zIndex: 9999,
-              boxShadow: '0 0 15px var(--accent-primary)',
-              filter: 'blur(1px)'
-          }}
-      />
-      <motion.div 
-          animate={{ x: mousePos.x - 30, y: mousePos.y - 30 }}
-          className="cursor-outer"
-          transition={{ type: "spring", damping: 20, stiffness: 100, mass: 0.8 }}
-          style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '60px',
-              height: '60px',
-              background: 'radial-gradient(circle, rgba(0, 210, 255, 0.1) 0%, transparent 70%)',
-              border: '1px solid rgba(0, 210, 255, 0.3)',
-              borderRadius: '50%',
-              pointerEvents: 'none',
-              zIndex: 9998,
-              filter: 'blur(2px)'
-          }}
-      />
+      {/* Project-wide Custom Mouse Pointer - HIDDEN ON TOUCH DEVICES */}
+      {!isTouchDevice && (
+        <>
+          <motion.div 
+              animate={{ x: mousePos.x - 10, y: mousePos.y - 10 }}
+              transition={{ type: "spring", damping: 30, stiffness: 200, mass: 0.5 }}
+              style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '20px',
+                  height: '20px',
+                  background: 'radial-gradient(circle, var(--accent-primary) 0%, transparent 80%)',
+                  borderRadius: '50%',
+                  pointerEvents: 'none',
+                  zIndex: 9999,
+                  boxShadow: '0 0 15px var(--accent-primary)',
+                  filter: 'blur(1px)'
+              }}
+          />
+          <motion.div 
+              animate={{ x: mousePos.x - 30, y: mousePos.y - 30 }}
+              transition={{ type: "spring", damping: 20, stiffness: 100, mass: 0.8 }}
+              style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '60px',
+                  height: '60px',
+                  background: 'radial-gradient(circle, rgba(0, 210, 255, 0.1) 0%, transparent 70%)',
+                  border: '1px solid rgba(0, 210, 255, 0.3)',
+                  borderRadius: '50%',
+                  pointerEvents: 'none',
+                  zIndex: 9998,
+                  filter: 'blur(2px)'
+              }}
+          />
+        </>
+      )}
       
       <nav style={{ padding: '0.8rem 0', background: 'rgba(13, 17, 23, 0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, zIndex: 1000 }}>
         <div className="container nav-container">

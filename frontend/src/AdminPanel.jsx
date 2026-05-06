@@ -264,35 +264,50 @@ const AdminPanel = () => {
     return (
         <div className="container" style={{ padding: "60px 0" }}>
             {/* Header with Navigation Tabs */}
-            <div className="admin-header-flex">
-                <div style={{ marginBottom: "1rem" }}>
-                    <h1 className="hero-title" style={{ textAlign: "left", margin: 0, fontSize: "clamp(2rem, 5vw, 3rem)", letterSpacing: "-1px" }}>ORION OS</h1>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem" }}>
+                <div>
+                    <h1 className="hero-title" style={{ textAlign: "left", margin: 0, fontSize: "3rem", letterSpacing: "-1px" }}>ORION OS</h1>
                     <p style={{ color: "#00d2ff", letterSpacing: "2px", margin: "10px 0 0 0", fontSize: "0.8rem", fontWeight: 700, opacity: 0.8 }}>
                         {userRole === "admin" ? "CENTRAL COMMAND | ALL PRIVILEGES" : `EVENT PROTOCOL: ${userRole?.toUpperCase()}`}
                     </p>
                 </div>
 
-                <div className="admin-tabs-nav">
+                <div style={{ display: "flex", gap: "10px", background: "rgba(0,0,0,0.3)", padding: "8px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.05)" }}>
                     <button 
                         onClick={() => setActiveTab("registrations")}
-                        className={activeTab === "registrations" ? "active" : ""}
+                        style={{ 
+                            padding: "10px 24px", borderRadius: "10px", border: "none", cursor: "pointer",
+                            background: activeTab === "registrations" ? "var(--btn-gradient)" : "transparent",
+                            color: activeTab === "registrations" ? "white" : "rgba(255,255,255,0.4)",
+                            fontSize: "0.75rem", fontWeight: 700, transition: "all 0.3s ease"
+                        }}
                     >
                         REGISTRATIONS
                     </button>
                     {userRole === "admin" && (
                         <button 
                             onClick={() => setActiveTab("events")}
-                            className={activeTab === "events" ? "active" : ""}
+                            style={{ 
+                                padding: "10px 24px", borderRadius: "10px", border: "none", cursor: "pointer",
+                                background: activeTab === "events" ? "var(--btn-gradient)" : "transparent",
+                                color: activeTab === "events" ? "white" : "rgba(255,255,255,0.4)",
+                                fontSize: "0.75rem", fontWeight: 700, transition: "all 0.3s ease"
+                            }}
                         >
-                            EVENTS
+                            EVENT MANAGEMENT
                         </button>
                     )}
                     {userRole === "admin" && (
                         <button 
                             onClick={() => setActiveTab("settings")}
-                            className={activeTab === "settings" ? "active" : ""}
+                            style={{ 
+                                padding: "10px 24px", borderRadius: "10px", border: "none", cursor: "pointer",
+                                background: activeTab === "settings" ? "var(--btn-gradient)" : "transparent",
+                                color: activeTab === "settings" ? "white" : "rgba(255,255,255,0.4)",
+                                fontSize: "0.75rem", fontWeight: 700, transition: "all 0.3s ease"
+                            }}
                         >
-                            SETTINGS
+                            SYMPOSIUM SETTINGS
                         </button>
                     )}
                 </div>

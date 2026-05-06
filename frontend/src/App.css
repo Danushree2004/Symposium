@@ -232,71 +232,6 @@ table td {
     }
 }
 
-/* ADMIN TABS HORIZONTAL FIX */
-.admin-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 3rem;
-}
-
-.admin-tabs-nav {
-    display: flex;
-    gap: 8px;
-    background: rgba(0,0,0,0.3);
-    padding: 6px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.05);
-    overflow-x: auto;
-    max-width: 100%;
-}
-
-.admin-tabs-nav button {
-    padding: 8px 16px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    background: transparent;
-    color: rgba(255,255,255,0.4);
-    font-size: 0.7rem;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-.admin-tabs-nav button.active {
-    background: var(--btn-gradient);
-    color: white;
-}
-
-@media (max-width: 1024px) {
-    .admin-header-flex {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .admin-header-flex h1 {
-        text-align: center !important;
-    }
-
-    .admin-tabs-nav {
-        width: 100%;
-        justify-content: center;
-        padding: 4px;
-    }
-}
-
-/* MOUSE GESTURE TOUCH FIX */
-@media (hover: none) and (pointer: coarse) {
-    .cursor-glow, .cursor-outer {
-        display: none !important;
-    }
-    * {
-        cursor: auto !important;
-    }
-}
-
 /* AGGRESSIVE MOBILE FIX - FULL SCREEN WIDTH */
 html, body {
     overflow-x: hidden !important;
@@ -430,22 +365,32 @@ html, body {
 
     /* Navbar Fix: Mobile Menu Style */
     nav {
-        padding: 10px !important;
+        padding: 5px 10px !important;
         height: auto !important;
     }
     
     .nav-container {
-        flex-direction: column !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
         align-items: center !important;
-        text-align: center !important;
-        gap: 10px !important;
+        gap: 5px !important;
+        padding: 0 5px !important;
     }
 
     .nav-container div {
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        gap: 8px !important;
-        width: 100% !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-end !important;
+        gap: 12px !important;
+        width: auto !important;
+    }
+
+    /* Hide text for specific links on very small screens to save space */
+    @media (max-width: 400px) {
+        .nav-container div a {
+            font-size: 0.65rem !important;
+            gap: 5px !important;
+        }
     }
 
     /* Hero Section Fix */
