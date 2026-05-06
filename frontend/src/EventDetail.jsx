@@ -168,20 +168,20 @@ const EventDetail = () => {
     if (!event) return <div className="container hero-title" style={{ marginTop: "20vh" }}>EVENT NOT FOUND.</div>;
 
     return (
-        <div className="container" style={{ position: "relative", padding: "100px 0" }}>
+        <div className="container event-detail-container" style={{ position: "relative", padding: "100px 0" }}>
             <Link to="/" style={{ textDecoration: "none", color: "var(--accent-primary)", fontWeight: 600, display: "flex", alignItems: "center", gap: "8px", marginBottom: "3rem", fontSize: "1rem", letterSpacing: "1.5px" }}>
                 <ChevronLeft size={18} /> BACK TO MATRIX
             </Link>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gridTemplateAreas: "'details form'", gap: "4rem", alignItems: "start" }}>
+            <div className="event-detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr auto", gridTemplateAreas: "'details form'", gap: "4rem", alignItems: "start" }}>
                 {/* Event Details */}
-                <div style={{ gridArea: "details" }} className="glass-card">
-                    <h1 className="hero-title" style={{ fontSize: "3rem", margin: "0 0 1rem 0", textAlign: "left", WebkitTextStroke: "2.5px var(--accent-primary)" }}>{event.name}</h1>
+                <div style={{ gridArea: "details" }} className="glass-card event-info-card">
+                    <h1 className="hero-title event-detail-title" style={{ fontSize: "3rem", margin: "0 0 1rem 0", textAlign: "left", WebkitTextStroke: "2.5px var(--accent-primary)" }}>{event.name}</h1>
                     <div style={{ padding: "4px 16px", borderRadius: "4px", background: "var(--accent-primary)", color: "#000", display: "inline-block", fontSize: "0.75rem", fontWeight: 900, marginBottom: "2.5rem", letterSpacing: "2px" }}>
                         {event.type.toUpperCase()} MODULE
                     </div>
-                    <div style={{ color: "var(--text-secondary)", fontSize: "1.15rem", lineHeight: "1.8", marginBottom: "4rem" }}>{event.description}</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "2rem" }}>
+                    <div className="event-description" style={{ color: "var(--text-secondary)", fontSize: "1.15rem", lineHeight: "1.8", marginBottom: "4rem" }}>{event.description}</div>
+                    <div className="event-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "2rem" }}>
                         <div>
                             <span style={{ opacity: 0.4, fontSize: "0.6rem", letterSpacing: "2px" }}>VENUE</span>
                             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.9rem" }}><MapPin size={16} /> {event.venue}</div>
@@ -198,7 +198,7 @@ const EventDetail = () => {
                 </div>
 
                 {/* Registration Form */}
-                <div style={{ gridArea: "form", width: "450px" }} className="glass-card">
+                <div style={{ gridArea: "form" }} className="glass-card event-form-card">
                     <h3 style={{ margin: "0 0 2rem 0", letterSpacing: "3px", fontWeight: 300, fontSize: "0.9rem", color: "var(--accent-secondary)" }}>PROTOCOL REGISTRATION</h3>
                     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
                         {/* Show registration type selection only if event type is team */}

@@ -154,6 +154,37 @@ html, body {
     div[style*='zIndex: 9998'] {
         display: none !important;
     }
+
+    /* Event Detail Responsive Fixes */
+    .event-detail-container {
+        padding: 60px 0 !important;
+    }
+    
+    .event-detail-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2rem !important;
+    }
+    
+    .event-info-card, .event-form-card {
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    .event-detail-title {
+        font-size: 2.2rem !important;
+        -webkit-text-stroke: 1.5px var(--accent-primary) !important;
+    }
+    
+    .event-stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .event-form-card {
+        padding: 1.5rem !important;
+    }
 }
 
 
