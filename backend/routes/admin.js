@@ -31,7 +31,6 @@ const qrStorage = process.env.VERCEL
     });
 
 const qrUpload = multer({ storage: qrStorage });
-const qrUpload = multer({ storage: qrStorage });
 
 // Helper function to extract UPI ID from QR image
 async function extractUpiFromQR(filePath) {
