@@ -38,17 +38,17 @@ const EventDetail = () => {
             const token = localStorage.getItem("token");
             try {
                 // Fetch settings
-                const setRes = await axios.get("http://localhost:5000/admin/settings");
+                const setRes = await axios.get("/api/admin/settings");
                 if (setRes.data) setSettings(setRes.data);
 
                 // Fetch event details
-                const eventRes = await axios.get("http://localhost:5000/events");
+                const eventRes = await axios.get("/api/events");
                 const selectedEvent = eventRes.data.find(e => e._id === eventId);
                 setEvent(selectedEvent);
                 
                 // Fetch current user status to check if already paid
                 if (token) {
-                    const userRes = await axios.get("http://localhost:5000/users/me", {
+                    const userRes = await axios.get("/api/users/me", {
                         headers: { "x-auth-token": token }
                     });
                     const status = userRes.data.symposiumPaymentStatus;
@@ -148,7 +148,7 @@ const EventDetail = () => {
         submitData.append("teamMembersDetails", JSON.stringify(teamMembers));
 
         try {
-            const res = await axios.post("http://localhost:5000/events/register-participation", submitData, {
+            const res = await axios.post("/api/events/register-participation", submitData, {
                 headers: { 
                     "Content-Type": "multipart/form-data",
                     "x-auth-token": token 
