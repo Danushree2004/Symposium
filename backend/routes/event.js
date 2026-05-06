@@ -8,15 +8,20 @@ const multer = require('multer');
 const path = require('path');
 const sendEmail = require('../utils/sendEmail');
 
-// Configure multer for payment screenshot uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
+const os = require('os');
+
+// Configure multer for payment screenshot uploads using memoryStorage for Vercel
+const storage = process.env.VERCEL 
+  ? multer.memoryStorage() 
+  : multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+      },
+      filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+      }
+    });
+
 const upload = multer({ storage: storage });
 
 // Get all events
@@ -112,7 +117,18 @@ router.post('/register-participation', auth, upload.single('paymentProof'), asyn
       paymentRef = currentUser.symposiumPaymentRef;
       paymentStatus = currentUser.symposiumPaymentStatus;
     } else {
-      paymentScreenshot = req.file ? req.file.filename : '';
+      if (req.file) {
+        if (process.env.VERCEL || req.file.buffer) {
+          // Store file as Base64 string if on Vercel or if buffer is present
+          const base64Content = req.file.buffer.toString('base64');
+          paymentScreenshot = `data:${req.file.mimetype};base64,${base64Content}`;
+          console.log('[DEBUG] Stored file as Base64. Length:', paymentScreenshot.length);
+        } else {
+          paymentScreenshot = req.file.filename;
+        }
+      } else {
+        paymentScreenshot = '';
+      }
       paymentRef = transactionId;
       paymentStatus = 'pending';
 
@@ -165,13 +181,18 @@ router.post('/register-participation', auth, upload.single('paymentProof'), asyn
       console.log(`Success email sent to ${currentUser.email}`);
     } catch (emailErr) {
       console.error('Failed to send registration email:', emailErr.message);
+      // Log full error code for debugging
+      if (emailErr.code) console.error('SMTP Error Code:', emailErr.code);
       // Non-blocking: registration is still successful even if email fails
     }
 
     res.json({ msg: 'Registered for event successfully', participation: saved });
   } catch (err) {
-    console.error('Registration error details:', err.response?.data || err.message);
-    res.status(500).json({ error: err.message });
+    console.error('REGISTRATION ERROR:', err.message);
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ error: 'Validation Error: ' + err.message });
+    }
+    res.status(500).json({ error: 'Server Error during registration: ' + err.message });
   }
 });
 

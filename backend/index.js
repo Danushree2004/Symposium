@@ -80,7 +80,9 @@ app.use(async (req, res, next) => {
 });
 
 // Middleware
-app.use(express.json());
+// Increase size limit for Base64 image storage in MongoDB
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors({
   origin: '*',
   allowedHeaders: ['Content-Type', 'x-auth-token', 'x-user-role'],
@@ -88,10 +90,13 @@ app.use(cors({
 }));
 
 // Serves files with correct Content-Type and Inline disposition to ensure browser preview
+const os = require('os');
+const uploadPath = process.env.VERCEL ? os.tmpdir() : path.join(__dirname, 'uploads');
+
 app.use('/uploads', (req, res, next) => {
   res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   next();
-}, express.static(path.join(__dirname, 'uploads'), {
+}, express.static(uploadPath, {
   setHeaders: (res, filePath) => {
     const ext = path.extname(filePath).toLowerCase();
     if (ext === '.pdf') res.setHeader('Content-Type', 'application/pdf');

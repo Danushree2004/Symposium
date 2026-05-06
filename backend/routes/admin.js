@@ -16,15 +16,21 @@ const { Jimp } = jimp;
 const jsQR = require('jsqr');
 const fs = require('fs');
 
-// Configure multer for QR upload
-const qrStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, 'ADMIN_QR_' + Date.now() + path.extname(file.originalname));
-  }
-});
+const os = require('os');
+
+// Configure multer for QR upload - Use memoryStorage for Vercel
+const qrStorage = process.env.VERCEL 
+  ? multer.memoryStorage() 
+  : multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+      },
+      filename: (req, file, cb) => {
+        cb(null, 'ADMIN_QR_' + Date.now() + path.extname(file.originalname));
+      }
+    });
+
+const qrUpload = multer({ storage: qrStorage });
 const qrUpload = multer({ storage: qrStorage });
 
 // Helper function to extract UPI ID from QR image
