@@ -33,9 +33,15 @@ const qrStorage = process.env.VERCEL
 const qrUpload = multer({ storage: qrStorage });
 
 // Helper function to extract UPI ID from QR image
-async function extractUpiFromQR(filePath) {
+async function extractUpiFromQR(fileSource) {
   try {
-    const image = await Jimp.read(filePath);
+    let image;
+    if (Buffer.isBuffer(fileSource)) {
+      image = await Jimp.read(fileSource);
+    } else {
+      image = await Jimp.read(fileSource);
+    }
+    
     const { data, width, height } = image.bitmap;
     const code = jsQR(data, width, height);
     if (code && code.data) {
@@ -86,13 +92,29 @@ router.post('/settings', auth, adminOnly, qrUpload.single('qrCode'), async (req,
       settings = new Settings({ key: 'symposium_config', value: { upiId: '919994645063@ybl', baseAmount: 200 } });
     }
 
-    // If a file was uploaded, try to extract the UPI ID
+    // Handle Upload for Vercel (Memory/Base64) vs Local (Disk)
     if (req.file) {
-      settings.value.qrCode = req.file.filename;
-      const extractedUpi = await extractUpiFromQR(path.join(__dirname, '../uploads/', req.file.filename));
-      if (extractedUpi) {
-        console.log('[DEBUG] Auto-extracted UPI ID:', extractedUpi);
-        upiId = extractedUpi; // Override the provided UPI ID with the extracted one
+      if (process.env.VERCEL) {
+        // Vercel: Store as Base64 in DB
+        const base64Image = req.file.buffer.toString('base64');
+        const mimeType = req.file.mimetype;
+        settings.value.qrCode = `data:${mimeType};base64,${base64Image}`;
+        
+        // Extract UPI ID from buffer
+        const extractedUpi = await extractUpiFromQR(req.file.buffer);
+        if (extractedUpi) {
+          console.log('[DEBUG] Auto-extracted UPI ID (Vercel):', extractedUpi);
+          upiId = extractedUpi;
+        }
+      } else {
+        // Local: Store filename and extract from disk
+        settings.value.qrCode = req.file.filename;
+        const filePath = path.join(__dirname, '../uploads/', req.file.filename);
+        const extractedUpi = await extractUpiFromQR(filePath);
+        if (extractedUpi) {
+          console.log('[DEBUG] Auto-extracted UPI ID (Local):', extractedUpi);
+          upiId = extractedUpi;
+        }
       }
     }
 
