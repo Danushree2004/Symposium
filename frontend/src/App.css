@@ -118,33 +118,58 @@
 /* AGGRESSIVE MOBILE FIX - FULL SCREEN WIDTH */
 html, body {
     overflow-x: hidden !important;
-    width: 100% !important;
+    width: 100vw !important;
     position: relative !important;
     margin: 0 !important;
     padding: 0 !important;
+    -webkit-text-size-adjust: 100%;
+}
+
+* {
+    box-sizing: border-box !important;
+}
+
+#root {
+    padding: 10px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
 }
 
 @media (max-width: 600px) {
-    .container, .nav-container {
-        padding: 0 10px !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
+    /* Prevent any element from forcing horizontal scroll */
+    .container, .glass-card, .main-dashboard, div {
+        max-width: 100% !important;
+        overflow-wrap: break-word !important;
     }
-    
+
     .hero-title {
         font-size: 1.8rem !important;
         word-break: break-word !important;
         text-align: center !important;
     }
 
-    /* Force all flex and grid to stack */
+    /* Force all flex and grid to stack unless overridden */
     div[style*='display: grid'], 
-    div[style*='display: flex'] {
+    div[style*='display: flex']:not(.nav-links) {
         flex-direction: column !important;
         grid-template-columns: 1fr !important;
         width: 100% !important;
+        gap: 15px !important;
     }
 
+    /* Table containers must scroll, but cards must not */
+    .glass-card {
+        padding: 15px !important;
+        width: 100% !important;
+    }
+
+    /* Specific fix for inputs and buttons */
+    input, select, textarea, .btn-glow {
+        font-size: 16px !important; /* Prevents iOS zoom */
+        padding: 12px !important;
+    }
+    
     /* Fix image and QR boxes overflowing */
     img, .qr-code, canvas {
         max-width: 100% !important;
