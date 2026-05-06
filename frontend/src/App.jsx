@@ -35,6 +35,7 @@ const App = () => {
       {/* Project-wide Custom Mouse Pointer */}
       <motion.div 
           animate={{ x: mousePos.x - 10, y: mousePos.y - 10 }}
+          className="cursor-glow"
           transition={{ type: "spring", damping: 30, stiffness: 200, mass: 0.5 }}
           style={{
               position: 'fixed',
@@ -52,6 +53,7 @@ const App = () => {
       />
       <motion.div 
           animate={{ x: mousePos.x - 30, y: mousePos.y - 30 }}
+          className="cursor-outer"
           transition={{ type: "spring", damping: 20, stiffness: 100, mass: 0.8 }}
           style={{
               position: 'fixed',
