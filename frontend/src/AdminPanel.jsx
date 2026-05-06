@@ -349,27 +349,16 @@ const AdminPanel = () => {
                         </div>
                         
                         <div className="filter-controls">
-                            <div style={{ position: "relative" }}>
-                                <Search size={16} style={{ 
-                                    position: "absolute", 
-                                    left: "15px", 
-                                    top: "50%", 
-                                    transform: "translateY(-50%)", 
-                                    opacity: 0.5,
-                                    zIndex: 2,
-                                    pointerEvents: "none",
-                                    color: "var(--accent-primary)"
-                                }} />
+                            <div style={{ position: "relative", width: "100%" }}>
                                 <input 
                                     className="input-field" 
                                     style={{ 
-                                        paddingLeft: "45px", 
+                                        paddingLeft: "15px", 
                                         width: "100%", 
                                         height: "45px", 
                                         fontSize: "0.75rem", 
                                         border: "1px solid rgba(255,255,255,0.05)", 
-                                        background: "#111",
-                                        position: "relative"
+                                        background: "#111"
                                     }} 
                                     placeholder="SEARCH NAME / EMAIL..." 
                                     value={searchTerm}
@@ -377,72 +366,50 @@ const AdminPanel = () => {
                                 />
                             </div>
 
-                            <div style={{ position: "relative" }}>
-                                <Filter size={16} style={{ 
-                                    position: "absolute", 
-                                    left: "15px", 
-                                    top: "50%", 
-                                    transform: "translateY(-50%)", 
-                                    opacity: 0.5,
-                                    zIndex: 2,
-                                    pointerEvents: "none",
-                                    color: "var(--accent-primary)"
-                                }} />
+                            <div style={{ position: "relative", width: "100%" }}>
                                 <select 
                                     className="input-field" 
                                     style={{ 
-                                        paddingLeft: "45px", 
+                                        paddingLeft: "15px", 
                                         width: "100%", 
                                         height: "45px", 
                                         fontSize: "0.75rem", 
                                         cursor: "pointer", 
-                                        appearance: "none", 
+                                        appearance: "auto", 
                                         border: "1px solid rgba(255,255,255,0.05)", 
                                         background: "#111", 
-                                        color: "white",
-                                        position: "relative"
+                                        color: "white"
                                     }}
                                     value={filter}
                                     onChange={(e) => setFilter(e.target.value)}
                                 >
-                                    <option value="all" style={{ background: "#111", color: "white" }}>ALL STATUS</option>
-                                    <option value="pending" style={{ background: "#111", color: "white" }}>PENDING</option>
-                                    <option value="verified" style={{ background: "#111", color: "white" }}>VERIFIED</option>
-                                    <option value="rejected" style={{ background: "#111", color: "white" }}>REJECTED</option>
+                                    <option value="all">ALL STATUS</option>
+                                    <option value="pending">PENDING</option>
+                                    <option value="verified">VERIFIED</option>
+                                    <option value="rejected">REJECTED</option>
                                 </select>
                             </div>
 
-                            <div style={{ position: "relative" }}>
-                                <FileText size={16} style={{ 
-                                    position: "absolute", 
-                                    left: "15px", 
-                                    top: "50%", 
-                                    transform: "translateY(-50%)", 
-                                    opacity: 0.5,
-                                    zIndex: 2,
-                                    pointerEvents: "none",
-                                    color: "var(--accent-primary)"
-                                }} />
+                            <div style={{ position: "relative", width: "100%" }}>
                                 <select 
                                     className="input-field" 
                                     style={{ 
-                                        paddingLeft: "45px", 
+                                        paddingLeft: "15px", 
                                         width: "100%", 
                                         height: "45px", 
                                         fontSize: "0.75rem", 
                                         cursor: "pointer", 
-                                        appearance: "none", 
+                                        appearance: "auto", 
                                         border: "1px solid rgba(255,255,255,0.05)", 
                                         background: "#111", 
-                                        color: "white",
-                                        position: "relative"
+                                        color: "white"
                                     }}
                                     value={eventFilter}
                                     onChange={(e) => setEventFilter(e.target.value)}
                                 >
-                                    <option value="all" style={{ background: "#111", color: "white" }}>ALL EVENTS</option>
+                                    <option value="all">ALL EVENTS</option>
                                     {allEvents.map(ev => (
-                                        <option key={ev._id} value={ev.name} style={{ background: "#111", color: "white" }}>{ev.name.toUpperCase()}</option>
+                                        <option key={ev._id} value={ev.name}>{ev.name.toUpperCase()}</option>
                                     ))}
                                 </select>
                             </div>
@@ -569,37 +536,15 @@ const AdminPanel = () => {
                                                         }
 
                                                         if (screenshot.startsWith('data:')) {
-                                                            try {
-                                                                // Use an iframe in the new window for more consistent Base64 loading
-                                                                const win = window.open("", "_blank");
-                                                                if (win) {
-                                                                    win.document.write(`
-                                                                        <!DOCTYPE html>
-                                                                        <html>
-                                                                            <head>
-                                                                                <title>Payment Proof</title>
-                                                                                <style>
-                                                                                    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-                                                                                    img { max-width: 100%; max-height: 100%; object-fit: contain; }
-                                                                                </style>
-                                                                            </head>
-                                                                            <body>
-                                                                                <img src="${screenshot}" alt="Payment Proof" />
-                                                                            </body>
-                                                                        </html>
-                                                                    `);
-                                                                    win.document.close();
-                                                                } else {
-                                                                    alert("Popup blocked! Please allow popups for this site.");
-                                                                }
-                                                            } catch (e) {
-                                                                console.error("Popup Error:", e);
-                                                                // Fallback: If popup fails, try direct data URL (might be blocked by browsers)
-                                                                window.open(screenshot, "_blank");
+                                                            const win = window.open();
+                                                            if (win) {
+                                                                win.document.write(`<html><head><title>Payment Proof</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;"><img src="${screenshot}" style="max-width:100\%;max-height:100\%;object-fit:contain;cursor:zoom-in" onclick="this.style.maxHeight='none';this.style.maxWidth='none';this.style.cursor='zoom-out'" /></body></html>`);
+                                                                win.document.close();
+                                                            } else {
+                                                                alert("Popup blocked! Please allow popups.");
                                                             }
                                                         } else {
-                                                            const fileUrl = `/api/uploads/${screenshot}`;
-                                                            window.open(fileUrl, '_blank');
+                                                            window.open(\`/api/uploads/\${screenshot}\`, '_blank');
                                                         }
                                                     }}
                                                     style={{ padding: '4px 8px', fontSize: '0.6rem', width: '150px' }}
