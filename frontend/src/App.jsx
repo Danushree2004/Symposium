@@ -79,16 +79,16 @@ const App = () => {
       )}
       
       <nav style={{ padding: '0.8rem 0', background: 'rgba(13, 17, 23, 0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, zIndex: 1000 }}>
-        <div className="container nav-container">
-          <Link to="/" style={{ fontSize: '1.4rem', fontWeight: 800, background: 'linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textDecoration: 'none', letterSpacing: '-1px' }}>ORION 2K26</Link>
-          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <Link to="/" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Dashboard</Link>
+        <div className="container nav-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '1rem' }}>
+          <Link to="/" style={{ fontSize: '1.2rem', fontWeight: 800, background: 'linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textDecoration: 'none', letterSpacing: '-1px', minWidth: 'fit-content' }}>ORION 2K26</Link>
+          <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center', flexWrap: 'nowrap' }}>
+            <Link to="/" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}>Dashboard</Link>
             
             {user ? (
               <>
-                <Link to="/participant-dashboard" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>My Profile</Link>
+                <Link to="/participant-dashboard" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}>Profile</Link>
                 {(user.role === 'admin' || user.role === 'event-admin') && (
-                  <Link to="/admin" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>Admin Panel</Link>
+                  <Link to="/admin" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}>Admin</Link>
                 )}
                 <button 
                   onClick={handleLogout}
@@ -96,13 +96,13 @@ const App = () => {
                     background: 'rgba(255, 64, 128, 0.1)', 
                     border: '1px solid rgba(255, 64, 128, 0.3)', 
                     color: '#ff4080', 
-                    padding: '6px 14px', 
-                    borderRadius: '8px', 
-                    fontSize: '0.65rem', 
+                    padding: '4px 8px', 
+                    borderRadius: '6px', 
+                    fontSize: '0.6rem', 
                     fontWeight: 800, 
                     cursor: 'pointer',
                     textTransform: 'uppercase',
-                    letterSpacing: '1px'
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   Logout
@@ -110,8 +110,8 @@ const App = () => {
               </>
             ) : (
               <>
-                <Link to="/register" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Join Now</Link>
-                <Link to="/admin-login" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Admin</Link>
+                <Link to="/register" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Join</Link>
+                <Link to="/admin-login" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Admin</Link>
               </>
             )}
           </div>
