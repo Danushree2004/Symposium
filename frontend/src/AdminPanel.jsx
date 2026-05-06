@@ -521,38 +521,45 @@ const AdminPanel = () => {
                                                         src={`/api/uploads/${p.paymentScreenshot}`} 
                                                         style={{ width: '150px', height: '100px', objectFit: 'cover', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }} 
                                                         alt="Payment Proof"
-                                                        onError={(e) => e.target.style.display = 'none'}
+                                                        onError={(e) => {
+                                                            console.log("Image load failed, trying base64 fallback");
+                                                            // If /api/uploads/ fails, it might be stored as base64 in the string itself
+                                                            if (!p.paymentScreenshot.startsWith('data:')) {
+                                                                e.target.src = p.paymentScreenshot; 
+                                                            }
+                                                        }}
                                                     />
                                                 )
                                             )}
                                             
-                                                <button 
-                                                    type="button"
-                                                    className="btn-glow"
-                                                    onClick={() => {
-                                                        const screenshot = p.paymentScreenshot;
-                                                        if (!screenshot) {
-                                                            alert("No screenshot available");
-                                                            return;
-                                                        }
+                                            <button 
+                                                type="button"
+                                                className="btn-glow"
+                                                onClick={() => {
+                                                    const screenshot = p.paymentScreenshot;
+                                                    if (!screenshot) {
+                                                        alert("No screenshot available");
+                                                        return;
+                                                    }
 
-                                                        if (screenshot.startsWith('data:')) {
-                                                            const win = window.open();
-                                                            if (win) {
-                                                                win.document.write(`<html><head><title>Payment Proof</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;"><img src="${screenshot}" style="max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in" onclick="this.style.maxHeight='none';this.style.maxWidth='none';this.style.cursor='zoom-out'" /></body></html>`);
-                                                                win.document.close();
-                                                            } else {
-                                                                alert("Popup blocked! Please allow popups.");
-                                                            }
+                                                    // Unified View Logic: If it's data URI or looks like one, use document.write
+                                                    if (screenshot.startsWith('data:') || screenshot.length > 500) {
+                                                        const win = window.open();
+                                                        if (win) {
+                                                            win.document.write(`<html><head><title>Payment Proof</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;"><img src="${screenshot}" style="max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in" onclick="this.style.maxHeight='none';this.style.maxWidth='none';this.style.cursor='zoom-out'" /></body></html>`);
+                                                            win.document.close();
                                                         } else {
-                                                            window.open(`/api/uploads/${screenshot}`, '_blank');
+                                                            alert("Popup blocked! Please allow popups.");
                                                         }
-                                                    }}
-                                                    style={{ padding: '4px 8px', fontSize: '0.6rem', width: '150px' }}
-                                                >
-                                                    {p.paymentScreenshot && p.paymentScreenshot.startsWith('data:') ? 'VIEW PROOF' : 'FULL SCREEN'}
-                                                </button>
-                                            </div>
+                                                    } else {
+                                                        window.open(`/api/uploads/${screenshot}`, '_blank');
+                                                    }
+                                                }}
+                                                style={{ padding: '4px 8px', fontSize: '0.6rem', width: '150px' }}
+                                            >
+                                                {p.paymentScreenshot && (p.paymentScreenshot.startsWith('data:') || p.paymentScreenshot.length > 500) ? 'VIEW PROOF' : 'FULL SCREEN'}
+                                            </button>
+                                        </div>
                                         ) : (
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                                                 <span style={{ fontSize: "0.65rem", opacity: 0.3 }}>NO SCREENSHOT</span>
