@@ -43,7 +43,15 @@ const EventDetail = () => {
 
                 // Fetch event details
                 const eventRes = await axios.get("/api/events");
-                const selectedEvent = eventRes.data.find(e => e._id === eventId);
+                console.log("Details - Event Fetch:", eventRes.data);
+                
+                // Allow matches even if case differs or ID structure varies
+                const selectedEvent = eventRes.data.find(e => e._id === eventId || e.id === eventId);
+                
+                if (!selectedEvent) {
+                    console.error("Event not found in list for ID:", eventId);
+                }
+                
                 setEvent(selectedEvent);
                 
                 // Fetch current user status to check if already paid
@@ -133,6 +141,10 @@ const EventDetail = () => {
         setSubmitting(true);
         const submitData = new FormData();
         submitData.append("eventId", eventId);
+        submitData.append("registrationType", formData.registrationType);
+        submitData.append("teamName", formData.teamName || "Individual");
+        submitData.append("teamMembersDetails", JSON.stringify(teamMembers));
+
         if (!userPaid) {
             submitData.append("transactionId", formData.transactionId);
             submitData.append("paymentProof", file);

@@ -472,37 +472,53 @@ const AdminPanel = () => {
                                     {p.paymentScreenshot ? (
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                             {/* Permanent Embedded Preview */}
-                                            {p.paymentScreenshot.toLowerCase().endsWith('.pdf') ? (
-                                                <iframe 
-                                                    src={`http://127.0.0.1:5000/uploads/${p.paymentScreenshot}`} 
-                                                    style={{ width: '150px', height: '100px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px' }}
-                                                    title="PDF Preview"
-                                                />
-                                            ) : (p.paymentScreenshot.toLowerCase().endsWith('.doc') || p.paymentScreenshot.toLowerCase().endsWith('.docx')) ? (
-                                                <div style={{ width: '150px', height: '100px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', fontSize: '0.6rem' }}>
-                                                    WORD DOC
-                                                </div>
+                                            {p.paymentScreenshot.startsWith('data:') ? (
+                                                p.paymentScreenshot.includes('application/pdf') ? (
+                                                    <iframe 
+                                                        src={p.paymentScreenshot} 
+                                                        style={{ width: '150px', height: '100px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px' }}
+                                                        title="PDF Preview"
+                                                    />
+                                                ) : (
+                                                    <img 
+                                                        src={p.paymentScreenshot} 
+                                                        style={{ width: '150px', height: '100px', objectFit: 'cover', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }} 
+                                                        alt="Payment Proof"
+                                                    />
+                                                )
                                             ) : (
-                                                <img 
-                                                    src={`http://127.0.0.1:5000/uploads/${p.paymentScreenshot}`} 
-                                                    style={{ width: '150px', height: '100px', objectFit: 'cover', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }} 
-                                                    alt="Payment Proof"
-                                                    onError={(e) => e.target.style.display = 'none'}
-                                                />
+                                                p.paymentScreenshot.toLowerCase().endsWith('.pdf') ? (
+                                                    <iframe 
+                                                        src={`/api/uploads/${p.paymentScreenshot}`} 
+                                                        style={{ width: '150px', height: '100px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px' }}
+                                                        title="PDF Preview"
+                                                    />
+                                                ) : (p.paymentScreenshot.toLowerCase().endsWith('.doc') || p.paymentScreenshot.toLowerCase().endsWith('.docx')) ? (
+                                                    <div style={{ width: '150px', height: '100px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', fontSize: '0.6rem' }}>
+                                                        WORD DOC
+                                                    </div>
+                                                ) : (
+                                                    <img 
+                                                        src={`/api/uploads/${p.paymentScreenshot}`} 
+                                                        style={{ width: '150px', height: '100px', objectFit: 'cover', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }} 
+                                                        alt="Payment Proof"
+                                                        onError={(e) => e.target.style.display = 'none'}
+                                                    />
+                                                )
                                             )}
                                             
                                                 <button 
                                                     type="button"
                                                     className="btn-glow"
                                                     onClick={() => {
-                                                        const fileUrl = `http://127.0.0.1:5000/uploads/${p.paymentScreenshot}`;
-                                                        const isDoc = p.paymentScreenshot.toLowerCase().endsWith('.doc') || p.paymentScreenshot.toLowerCase().endsWith('.docx');
+                                                        const fileUrl = p.paymentScreenshot.startsWith('data:') ? p.paymentScreenshot : `/api/uploads/${p.paymentScreenshot}`;
+                                                        const isDoc = !p.paymentScreenshot.startsWith('data:') && (p.paymentScreenshot.toLowerCase().endsWith('.doc') || p.paymentScreenshot.toLowerCase().endsWith('.docx'));
                                                         const finalUrl = isDoc ? `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true` : fileUrl;
                                                         window.open(finalUrl, '_blank');
                                                     }}
                                                     style={{ padding: '4px 8px', fontSize: '0.6rem', width: '150px' }}
                                                 >
-                                                    FULL SCREEN
+                                                    {p.paymentScreenshot.startsWith('data:') ? 'VIEW PROOF' : 'FULL SCREEN'}
                                                 </button>
                                             </div>
                                         ) : (

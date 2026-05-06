@@ -10,7 +10,7 @@ const ParticipantDashboard = () => {
     const [showPreview, setShowPreview] = useState(false);
     const [previewData, setPreviewData] = useState(null);
 
-    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000"; // Centralized API address
+    const API_BASE = "/api";
 
 
     useEffect(() => {
@@ -187,7 +187,8 @@ const ParticipantDashboard = () => {
                                                                 onClick={() => {
                                                                     const token = localStorage.getItem('token');
                                                                     const timestamp = new Date().getTime();
-                                                                    const downloadUrl = `${window.location.protocol}//${window.location.hostname}:5000/certificates/download/${p._id}?token=${token}&v=${timestamp}`;
+                                                                    // Use relative API path instead of hardcoded hostname and :5000 port
+                                                                    const downloadUrl = `/api/certificates/download/${p._id}?token=${token}&v=${timestamp}`;
                                                                     console.log('Attempting download from:', downloadUrl);
                                                                     window.open(downloadUrl, '_blank');
                                                                 }}

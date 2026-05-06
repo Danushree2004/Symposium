@@ -82,6 +82,27 @@
         grid-template-columns: 1fr !important;
     }
     
+    /* FIX: Enable Horizontal Scrolling for ANY table on mobile */
+    .table-responsive, 
+    div[style*='overflowX: "auto"'],
+    div[style*='overflow-x: auto'],
+    .glass-card table {
+        display: block !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    /* Target the container of the table specifically */
+    div.glass-card {
+        overflow-x: auto !important;
+        width: 100% !important;
+    }
+
+    table {
+        min-width: 800px !important; /* Force a minimum width to trigger swipe */
+    }
+    
     input, select, textarea, button {
         width: 100% !important;
         box-sizing: border-box !important;
