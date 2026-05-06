@@ -700,26 +700,36 @@ const AdminPanel = () => {
                         <div className="input-group">
                             <label style={{ display: "block", color: "#888", fontSize: "0.7rem", marginBottom: "8px", fontWeight: 700 }}>PAYMENT QR CODE (IMAGE)</label>
                             {settings.qrCode && (
-                                <div style={{ marginBottom: "1rem", position: "relative", width: "150px" }}>
-                                    <p style={{ fontSize: "0.6rem", color: "var(--accent-primary)" }}>CURRENT QR:</p>
-                                    <img src={`http://127.0.0.1:5000/uploads/${settings.qrCode}`} alt="Current QR" style={{ width: "150px", borderRadius: "10px", border: "1px solid #333" }} />
+                                <div style={{ 
+                                    marginBottom: "1rem", 
+                                    position: "relative", 
+                                    width: "fit-content",
+                                    display: "inline-block"
+                                }}>
+                                    <p style={{ fontSize: "0.6rem", color: "var(--accent-primary)", marginBottom: "4px" }}>CURRENT QR:</p>
+                                    <img 
+                                        src={settings.qrCode.startsWith('data:') ? settings.qrCode : `/api/uploads/${settings.qrCode}`} 
+                                        alt="Current QR" 
+                                        style={{ width: "120px", height: "auto", borderRadius: "8px", border: "1px solid #333", display: "block" }} 
+                                    />
                                     <button 
                                         onClick={handleRemoveQR}
                                         style={{
                                             position: "absolute",
-                                            top: "20px",
-                                            right: "-10px",
-                                            background: "rgba(220, 38, 38, 0.9)",
+                                            top: "15px",
+                                            right: "-8px",
+                                            background: "#ef4444",
                                             border: "none",
                                             color: "white",
                                             borderRadius: "50%",
-                                            width: "25px",
-                                            height: "25px",
+                                            width: "22px",
+                                            height: "22px",
                                             cursor: "pointer",
                                             display: "flex",
                                             alignItems: "center",
                                             justifyContent: "center",
-                                            boxShadow: "0 4px 10px rgba(0,0,0,0.5)"
+                                            boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+                                            zIndex: 5
                                         }}
                                         title="Remove QR Image"
                                     >
