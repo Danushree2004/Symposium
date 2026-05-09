@@ -68,10 +68,17 @@ router.post('/register-participation', auth, upload.single('paymentProof'), asyn
 
     // Phone number validation (10 digits) - trimmed to catch hidden spaces
     const phonePattern = /^[0-9]{10}$/;
+    
+    // If parsedMembers is empty but it's an individual registration, 
+    // we should look for individual phone in req.body or handle gracefully
+    if (parsedMembers.length === 0) {
+        console.log('[DEBUG] No team members found in parsedMembers');
+    }
+
     for (const member of parsedMembers) {
         const phone = member.phone ? member.phone.toString().trim() : "";
         if (!phone || !phonePattern.test(phone)) {
-            console.log(`[DEBUG] Phone validation failed for: "${phone}"`);
+            console.log(`[DEBUG] Phone validation failed for: "${phone}" (Name: ${member.name})`);
             return res.status(400).json({ msg: `Invalid phone number for ${member.name || 'member'}. Must be a 10-digit number.` });
         }
     }
