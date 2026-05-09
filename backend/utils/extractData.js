@@ -1,6 +1,7 @@
 const jimp = require('jimp');
 const { Jimp } = jimp;
 const jsQR = require('jsqr');
+const Tesseract = require('tesseract.js');
 
 /**
  * Extracts Transaction ID or UPI details from a payment screenshot
@@ -9,11 +10,38 @@ const jsQR = require('jsqr');
  */
 async function extractTransactionDetails(fileSource) {
   try {
+    // 1. Try OCR first to find Transaction ID patterns
+    console.log('[DEBUG] Starting OCR Extraction...');
+    const ocrResult = await Tesseract.recognize(fileSource, 'eng');
+    const text = ocrResult.data.text;
+    console.log('[DEBUG] OCR Text Extracted:', text.substring(0, 100) + '...');
+
+    let transactionId = null;
+    
+    // Pattern for common Transaction IDs (UPI/Bank)
+    // - UPI/Google Pay/PhonePe often use 12-digit numbers
+    // - Bank IDs often start with T or have alphanumeric 12-22 chars
+    const txnPatterns = [
+        /\b[0-9]{12}\b/g,               // 12 digit numeric (Standard UPI)
+        /\b[T][0-9]{12,25}\b/g,          // T followed by numbers (PhonePe/GPay style)
+        /\b[a-zA-Z0-9]{12,24}\b/g        // General alphanumeric
+    ];
+
+    for (const pattern of txnPatterns) {
+        const matches = text.match(pattern);
+        if (matches && matches.length > 0) {
+            // Find the most likely one (usually the one not in a date/time)
+            transactionId = matches[0];
+            console.log('[DEBUG] Potential Txn ID match:', transactionId);
+            break;
+        }
+    }
+
+    // 2. Try QR Code extraction as a backup
     const image = await Jimp.read(fileSource);
     const { data, width, height } = image.bitmap;
-    
-    // 1. Try to find a QR Code (sometimes users screenshot the QR they paid to)
     const code = jsQR(data, width, height);
+    
     let extractedUpi = null;
     if (code && code.data) {
       const url = code.data;
@@ -24,17 +52,9 @@ async function extractTransactionDetails(fileSource) {
         extractedUpi = url.trim();
       }
     }
-
-    // 2. OCR-like Transaction ID extraction
-    // Since we don't have a full OCR engine like Tesseract, we search for common patterns
-    // in the image or wait for future implementation. 
-    // However, many users use the "Scan & Pay" screenshot which has the Txn ID.
-    
-    // For now, we mainly support QR-based extraction and basic pattern matching if possible.
-    // In a real production app, we would use Tesseract.js here.
     
     return {
-      transactionId: null, // Placeholder for OCR
+      transactionId: transactionId,
       upiId: extractedUpi
     };
   } catch (err) {
