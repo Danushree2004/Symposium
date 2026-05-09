@@ -12,12 +12,17 @@ async function extractTransactionDetails(fileSource) {
     // 1. OCR Extraction - Use a higher-level API for speed
     console.log('[DEBUG] Starting OCR Extraction...');
     
-    // Using recognize with remote worker/core disabled or handled internally
-    // to avoid the path errors AND the cold start delay of setting up a manual worker
-    const ocrResult = await Tesseract.recognize(fileSource, 'eng', {
-      gzip: false, // Potentially faster loading on serverless
-      errorHandler: e => console.error(e)
+    // Explicitly configure for Vercel/Node environment
+    const { createWorker } = Tesseract;
+    const worker = await createWorker('eng', 1, {
+      logger: m => console.log(m.status),
+      errorHandler: e => console.error(e),
+      // Prevent Tesseract from trying to cache data in read-only Vercel folders
+      cacheMethod: 'none', 
     });
+
+    const ocrResult = await worker.recognize(fileSource);
+    await worker.terminate();
     
     const text = ocrResult.data.text;
     console.log('[DEBUG] OCR Text Extracted (First 150):', text.substring(0, 150).replace(/\n/g, ' '));
