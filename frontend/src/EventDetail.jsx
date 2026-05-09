@@ -331,18 +331,18 @@ const EventDetail = () => {
                                     )}
                                     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                                         <div style={{ position: "relative" }}>
-                                            <UserIcon size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", opacity: 0.4, color: "var(--accent-primary)" }} />
-                                            <input className="input-cyber" style={{ paddingLeft: "42px", fontSize: "0.85rem", height: "45px" }} placeholder="FULL NAME (FOR CERTIFICATE)" value={member.name} onChange={(e) => updateMember(index, "name", e.target.value)} required />
+                                            <UserIcon size={16} style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", opacity: 0.6, color: "var(--accent-primary)", zIndex: 2 }} />
+                                            <input className="input-cyber" style={{ paddingLeft: "52px !important", fontSize: "0.85rem", height: "45px" }} placeholder="FULL NAME (FOR CERTIFICATE)" value={member.name} onChange={(e) => updateMember(index, "name", e.target.value)} required />
                                         </div>
                                         <div style={{ position: "relative" }}>
-                                            <Building size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", opacity: 0.4, color: "var(--accent-primary)" }} />
-                                            <input className="input-cyber" style={{ paddingLeft: "42px", fontSize: "0.85rem", height: "45px" }} placeholder="COLLEGE / INSTITUTION" value={member.college} onChange={(e) => updateMember(index, "college", e.target.value)} required />
+                                            <Building size={16} style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", opacity: 0.6, color: "var(--accent-primary)", zIndex: 2 }} />
+                                            <input className="input-cyber" style={{ paddingLeft: "52px !important", fontSize: "0.85rem", height: "45px" }} placeholder="COLLEGE / INSTITUTION" value={member.college} onChange={(e) => updateMember(index, "college", e.target.value)} required />
                                         </div>
                                         <div style={{ position: "relative" }}>
-                                            <Phone size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", opacity: 0.4, color: "var(--accent-primary)" }} />
+                                            <Phone size={16} style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", opacity: 0.6, color: "var(--accent-primary)", zIndex: 2 }} />
                                             <input 
                                                 className="input-cyber" 
-                                                style={{ paddingLeft: "42px", fontSize: "0.85rem", height: "45px" }} 
+                                                style={{ paddingLeft: "52px !important", fontSize: "0.85rem", height: "45px" }} 
                                                 placeholder="10-DIGIT PHONE NUMBER" 
                                                 type="tel"
                                                 maxLength="10"

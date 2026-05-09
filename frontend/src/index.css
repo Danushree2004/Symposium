@@ -132,14 +132,14 @@ body {
 }
 
 .input-cyber {
-  width: 100%;
-  padding: 1rem 1rem 1rem 3.5rem; /* Increased left padding for icons */
-  background: #111;
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  color: white;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
+  width: 100% !important;
+  padding: 1rem 1rem 1rem 3.5rem !important; /* Force padding to prevent icon overlap */
+  background: #111 !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: 12px !important;
+  color: white !important;
+  transition: all 0.3s ease !important;
+  box-sizing: border-box !important;
 }
 
 .input-cyber:focus {
