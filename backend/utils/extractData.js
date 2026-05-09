@@ -13,35 +13,42 @@ async function extractTransactionDetails(fileSource) {
     // 1. Try OCR first to find Transaction ID patterns
     console.log('[DEBUG] Starting OCR Extraction...');
     
-    // Configure worker options for serverless/Vercel environments using recognize() directly
-    // node-tesseract fails with remote worker paths due to cross-origin worker restrictions in Node environment
-    const ocrResult = await Tesseract.recognize(fileSource, 'eng');
-    const text = ocrResult.data.text;
-
-    console.log('[DEBUG] OCR Text Extracted:', text.substring(0, 100) + '...');
+    let text = "";
+    try {
+        // Use recognize with local core load disabled to force Tesseract to handle its own fetching
+        // But since Tesseract is notoriously difficult on Vercel Node runtimes, 
+        // we wrap it in a strict try-catch to allow QR backup to work if OCR fails.
+        const ocrResult = await Tesseract.recognize(fileSource, 'eng');
+        text = ocrResult.data.text;
+        console.log('[DEBUG] OCR Text Extracted (First 100):', text.substring(0, 100));
+    } catch (ocrErr) {
+        console.error('[OCR ERROR] Tesseract failed, falling back to QR scan:', ocrErr.message);
+        // If Tesseract crashes (like the ENOENT error), we continue to QR extraction
+    }
 
     let transactionId = null;
     
-    // Pattern for common Transaction IDs (UPI/Bank)
-    // - UPI/Google Pay/PhonePe often use 12-digit numbers
-    // - Bank IDs often start with T or have alphanumeric 12-22 chars
-    const txnPatterns = [
-        /\b[0-9]{12}\b/g,               // 12 digit numeric (Standard UPI)
-        /\b[T][0-9]{12,25}\b/g,          // T followed by numbers (PhonePe/GPay style)
-        /\b[a-zA-Z0-9]{12,24}\b/g        // General alphanumeric
-    ];
+    if (text) {
+        // Pattern for common Transaction IDs (UPI/Bank)
+        const txnPatterns = [
+            /\b[0-9]{12}\b/g,               // 12 digit numeric (Standard UPI)
+            /\b[T][0-9]{12,25}\b/g,          // T followed by numbers (PhonePe/GPay style)
+            /\b[a-zA-Z0-9]{12,24}\b/g        // General alphanumeric
+        ];
 
-    for (const pattern of txnPatterns) {
-        const matches = text.match(pattern);
-        if (matches && matches.length > 0) {
-            // Find the most likely one (usually the one not in a date/time)
-            transactionId = matches[0];
-            console.log('[DEBUG] Potential Txn ID match:', transactionId);
-            break;
+        for (const pattern of txnPatterns) {
+            const matches = text.match(pattern);
+            if (matches && matches.length > 0) {
+                // Find the most likely one
+                transactionId = matches[0];
+                console.log('[DEBUG] Potential Txn ID match:', transactionId);
+                break;
+            }
         }
     }
 
     // 2. Try QR Code extraction as a backup
+    console.log('[DEBUG] Checking for QR Code...');
     const image = await Jimp.read(fileSource);
     const { data, width, height } = image.bitmap;
     const code = jsQR(data, width, height);
