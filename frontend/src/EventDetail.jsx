@@ -422,10 +422,18 @@ const EventDetail = () => {
                                         </motion.div>
                                     )}
 
-                                    <input className="input-cyber" type="text" required placeholder={extracting ? "EXTRACTING ID..." : "TRANSACTION ID"} value={formData.transactionId} onChange={(e) => setFormData({...formData, transactionId: e.target.value})} />
+                                    {/* Transaction ID hidden to simplify registration as requested */}
+                                    <input type="hidden" value={formData.transactionId || "MANUAL_VERIFY"} />
+                                    
                                     <div className="input-group">
-                                        <label style={{ fontSize: "0.7rem", opacity: 0.5, marginBottom: "0.5rem", display: "block" }}>PAYMENT PROOF (PDF/IMAGE)</label>
+                                        <label style={{ fontSize: "0.7rem", opacity: 0.5, marginBottom: "0.5rem", display: "block", letterSpacing: "1px" }}>PAYMENT PROOF (PDF/IMAGE)</label>
                                         <input type="file" required className="input-cyber" style={{ padding: "0.6rem" }} onChange={handleFileChange} />
+                                        {extracting && (
+                                            <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px", color: "var(--accent-primary)" }}>
+                                                <Loader2 size={16} className="animate-spin" />
+                                                <span style={{ fontSize: "0.7rem", fontWeight: 800, letterSpacing: "1px" }}>AUTO-EXTRACTING ID...</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </>
                             ) : (
