@@ -15,19 +15,16 @@ async function extractTransactionDetails(fileSource) {
     
     let text = "";
     try {
-        // Force Tesseract to use a remote WASM core to bypass Vercel's missing local binaries
-        const worker = await Tesseract.createWorker('eng', 1, {
-            workerPath: 'https://unpkg.com/tesseract.js@5.1.1/dist/worker.min.js',
-            corePath: 'https://unpkg.com/tesseract.js-core@5.1.0/tesseract-core-simd.wasm.js',
-            cachePath: '/tmp'
-        });
-        const { data } = await worker.recognize(fileSource);
-        text = data.text;
-        await worker.terminate();
+        // Tesseract.recognize is the most compatible way for Node/Vercel
+        // It uses internal logic to find the worker and core.
+        // If it fails with path errors, we let the catch block handle the fallback.
+        const ocrResult = await Tesseract.recognize(fileSource, 'eng');
+        text = ocrResult.data.text;
         console.log('[DEBUG] OCR Text Extracted (First 150):', text.substring(0, 150));
     } catch (ocrErr) {
-        console.error('[OCR ERROR] Tesseract failed, falling back to manual regex on buffer:', ocrErr.message);
-        // If Tesseract crashes, we can't do much for OCR, but we ensure we don't crash
+        console.error('[OCR ERROR] Tesseract failed:', ocrErr.message);
+        // Fallback: If OCR fails entirely, we check if the image has a QR code
+        // as many users share screens with a "V" or QR code.
     }
 
     let transactionId = null;
