@@ -10,7 +10,8 @@ const auth = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    const secret = process.env.JWT_SECRET || 'STPD_DEFAULT_SECRET_2025_KEY';
+    const decoded = jwt.verify(token, secret);
     console.log('Decoded Token:', decoded);
     req.user = decoded;
     next();

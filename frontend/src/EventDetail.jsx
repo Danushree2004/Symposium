@@ -128,11 +128,12 @@ const EventDetail = () => {
 
         // Validation for member details
         for (let i = 0; i < teamMembers.length; i++) {
-            if (!teamMembers[i].name || !teamMembers[i].college || !teamMembers[i].phone) {
+            const phone = teamMembers[i].phone ? teamMembers[i].phone.trim() : "";
+            if (!teamMembers[i].name || !teamMembers[i].college || !phone) {
                 alert(`Please fill all details for Member ${i + 1}`);
                 return;
             }
-            if (!phonePattern.test(teamMembers[i].phone)) {
+            if (!phonePattern.test(phone)) {
                 alert(`Invalid phone number for Member ${i + 1}. Please enter a 10-digit phone number.`);
                 return;
             }
@@ -298,7 +299,19 @@ const EventDetail = () => {
                                         </div>
                                         <div style={{ position: "relative" }}>
                                             <Phone size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", opacity: 0.4, color: "var(--accent-primary)" }} />
-                                            <input className="input-cyber" style={{ paddingLeft: "42px", fontSize: "0.85rem", height: "45px" }} placeholder="PHONE NUMBER" value={member.phone} onChange={(e) => updateMember(index, "phone", e.target.value)} required />
+                                            <input 
+                                                className="input-cyber" 
+                                                style={{ paddingLeft: "42px", fontSize: "0.85rem", height: "45px" }} 
+                                                placeholder="10-DIGIT PHONE NUMBER" 
+                                                type="tel"
+                                                maxLength="10"
+                                                value={member.phone} 
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/\D/g, ""); // Allow only digits
+                                                    updateMember(index, "phone", val);
+                                                }} 
+                                                required 
+                                            />
                                         </div>
                                     </div>
                                 </div>

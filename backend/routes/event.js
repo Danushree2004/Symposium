@@ -65,10 +65,12 @@ router.post('/register-participation', auth, upload.single('paymentProof'), asyn
       parsedMembers = [];
     }
 
-    // Phone number validation (10 digits)
+    // Phone number validation (10 digits) - trimmed to catch hidden spaces
     const phonePattern = /^[0-9]{10}$/;
     for (const member of parsedMembers) {
-        if (!member.phone || !phonePattern.test(member.phone)) {
+        const phone = member.phone ? member.phone.toString().trim() : "";
+        if (!phone || !phonePattern.test(phone)) {
+            console.log(`[DEBUG] Phone validation failed for: "${phone}"`);
             return res.status(400).json({ msg: `Invalid phone number for ${member.name || 'member'}. Must be a 10-digit number.` });
         }
     }
