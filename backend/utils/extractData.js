@@ -22,7 +22,6 @@ async function extractTransactionDetails(fileSource) {
     const { data: bitmapData, width, height } = image.bitmap;
     const code = jsQR(bitmapData, width, height);
     
-    let extractedUpi = null;
     if (code && code.data) {
       const url = code.data;
       if (url.startsWith('upi://')) {
@@ -43,7 +42,5 @@ async function extractTransactionDetails(fileSource) {
     return { transactionId: null, upiId: null };
   }
 }
-
-module.exports = { extractTransactionDetails };
 
 module.exports = { extractTransactionDetails };
