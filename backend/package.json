@@ -28,7 +28,6 @@
     "nodemailer": "^8.0.4",
     "pdfkit": "^0.17.2",
     "qrcode": "^1.5.4",
-    "tesseract.js": "^5.1.1",
-    "tesseract.js-core": "^5.1.0"
+    "tesseract.js": "^5.1.1"
   }
 }
