@@ -314,20 +314,6 @@ const EventDashboard = () => {
                         </div>
                     </motion.div>
                 </motion.div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                            <div style={{ background: '#ff4080', color: 'white', padding: '8px 16px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Limit Notice</div>
-                            <p style={{ color: '#ffecf1', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.5px' }}>
-                                One operative can participate in a <span style={{ color: '#ff4080', fontWeight: 900, textDecoration: 'underline' }}>MAXIMUM of 2</span> events.
-                            </p>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                            <div style={{ background: 'var(--accent-primary)', color: 'black', padding: '8px 16px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Attention</div>
-                            <p style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.5px' }}>
-                                Constantly check your <span style={{ color: 'var(--accent-primary)' }}>Mail ID</span> and <span style={{ color: 'var(--accent-primary)' }}>Account Profile</span> for status updates and event credentials.
-                            </p>
-                        </div>
-                    </motion.div>
-                </motion.div>
 
                 <pre style={{ color: 'white', fontSize: '0.6rem' }}>DEBUG: Found {events.length} total events</pre>
                 {/* Technical Events Section */}
