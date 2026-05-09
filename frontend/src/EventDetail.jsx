@@ -419,21 +419,32 @@ const EventDetail = () => {
                                                 <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#666", letterSpacing: "1px", marginTop: "4px" }}>ONE-TIME SYMPOSIUM FEE</div>
                                                 <div style={{ fontSize: "0.5rem", color: "#999", marginTop: "8px", wordBreak: 'break-all' }}>UPI ID: {settings.upiId}</div>
                                             </div>
-                                        </motion.div>
                                     )}
 
-                                    {/* Transaction ID hidden to simplify registration as requested */}
-                                    <input type="hidden" value={formData.transactionId || "MANUAL_VERIFY"} />
+                                    {/* Transaction ID Input - Shown only if not already paid */}
+                                    {!userPaid && (
+                                        <div className="input-group" style={{ position: "relative" }}>
+                                            <CreditCard size={18} style={{ position: "absolute", left: "18px", top: "50%", transform: "translateY(-50%)", color: "var(--accent-primary)", opacity: 0.6, zIndex: 1 }} />
+                                            <input 
+                                                className="input-cyber" 
+                                                style={{ paddingLeft: "52px", height: "55px", fontSize: "0.9rem" }} 
+                                                type="text" 
+                                                placeholder={extracting ? "EXTRACTING..." : "TRANSACTION ID / UTR"} 
+                                                value={formData.transactionId} 
+                                                onChange={(e) => setFormData({...formData, transactionId: e.target.value})} 
+                                                required={!userPaid}
+                                            />
+                                            {extracting && (
+                                                <div style={{ position: "absolute", right: "15px", top: "50%", transform: "translateY(-50%)" }}>
+                                                    <Loader2 size={18} className="animate-spin" color="var(--accent-primary)" />
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                     
                                     <div className="input-group">
                                         <label style={{ fontSize: "0.7rem", opacity: 0.5, marginBottom: "0.5rem", display: "block", letterSpacing: "1px" }}>PAYMENT PROOF (PDF/IMAGE)</label>
                                         <input type="file" required className="input-cyber" style={{ padding: "0.6rem" }} onChange={handleFileChange} />
-                                        {extracting && (
-                                            <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px", color: "var(--accent-primary)" }}>
-                                                <Loader2 size={16} className="animate-spin" />
-                                                <span style={{ fontSize: "0.7rem", fontWeight: 800, letterSpacing: "1px" }}>AUTO-EXTRACTING ID...</span>
-                                            </div>
-                                        )}
                                     </div>
                                 </>
                             ) : (
