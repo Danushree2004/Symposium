@@ -199,31 +199,35 @@ const EventDashboard = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem' }}>
                         <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                             <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Users size={32} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>IDENTIFICATION</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Valid College ID Card is mandatory for base entry.</p>
+                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>INITIALIZE</h4>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Create your Neural Profile (Account) to access all event registration modules.</p>
+                        </div>
+                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Ticket size={32} /></div>
+                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>BASE FEE</h4>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Pay a one-time ₹200 fee for the first event; all subsequent events are FREE.</p>
+                        </div>
+                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Upload size={32} /></div>
+                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>AUTO SCAN</h4>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Upload your payment screenshot; our AI extracts the Transaction ID instantly.</p>
                         </div>
                         <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                             <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Trophy size={32} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>DRESS CODE</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Formal attire is required for all operatives.</p>
-                        </div>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Info size={32} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>JUDGEMENT</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>The council's (Judges) decision is final and binding.</p>
-                        </div>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Send size={32} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>DEVICE CONTROL</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Mobile usage restricted during technical operations.</p>
+                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>CERTIFICATION</h4>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Download your participation certificate from the Vault (Dashboard) after the event.</p>
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '3rem', padding: '1.5rem 2rem', borderRadius: '16px', background: 'rgba(255, 64, 128, 0.08)', border: '1px solid rgba(255, 64, 128, 0.3)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                        <div style={{ background: '#ff4080', color: 'white', padding: '8px 16px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Limit Notice</div>
-                        <p style={{ color: '#ffecf1', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.5px' }}>
-                            One operative can participate in a <span style={{ color: '#ff4080', fontWeight: 900, textDecoration: 'underline' }}>MAXIMUM of 2</span> events.
-                        </p>
+                    <div style={{ marginTop: '3rem', padding: '1.5rem 2rem', borderRadius: '16px', background: 'rgba(0, 210, 255, 0.05)', border: '1px solid rgba(0, 210, 255, 0.2)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <div style={{ background: 'var(--accent-primary)', color: 'black', padding: '4px 12px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase' }}>Registration Flow</div>
+                            <p style={{ color: 'white', fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>Register Account → Choose Event → Pay & Scan QR → Submit → View in Profile</p>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <div style={{ background: '#ff4080', color: 'white', padding: '4px 12px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase' }}>Event Limits</div>
+                            <p style={{ color: '#ffecf1', fontWeight: 600, fontSize: '0.85rem', margin: 0 }}>One account can participate in a <span style={{ color: '#ff4080', fontWeight: 900, textDecoration: 'underline' }}>MAXIMUM of 2</span> events.</p>
+                        </div>
                     </div>
                 </div>
 
