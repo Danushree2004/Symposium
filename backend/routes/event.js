@@ -76,9 +76,11 @@ router.post('/register-participation', auth, upload.single('paymentProof'), asyn
     let parsedMembers = [];
     try {
       if (teamMembersDetails) {
-        parsedMembers = typeof teamMembersDetails === 'string' 
-          ? JSON.parse(teamMembersDetails) 
-          : teamMembersDetails;
+        // Handle cases where teamMembersDetails might be an array (due to double append or other reasons)
+        const rawJson = Array.isArray(teamMembersDetails) ? teamMembersDetails[0] : teamMembersDetails;
+        parsedMembers = typeof rawJson === 'string' 
+          ? JSON.parse(rawJson) 
+          : rawJson;
       }
     } catch (e) {
       console.error('Error parsing team members:', e);

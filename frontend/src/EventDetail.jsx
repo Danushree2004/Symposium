@@ -188,11 +188,6 @@ const EventDetail = () => {
             submitData.append("paymentProof", null);
         }
 
-        // Send the actual registration type
-        submitData.append("registrationType", formData.registrationType);
-        submitData.append("teamName", formData.teamName);
-        submitData.append("teamMembersDetails", JSON.stringify(teamMembers));
-
         try {
             const res = await axios.post("/api/events/register-participation", submitData, {
                 headers: { 
