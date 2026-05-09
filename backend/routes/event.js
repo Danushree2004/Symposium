@@ -46,10 +46,11 @@ router.post('/register-participation', auth, upload.single('paymentProof'), asyn
     console.log('Registration request body:', req.body);
     console.log('Uploaded file:', req.file);
 
-    // Validate Transaction ID (alphanumeric, 8-24 characters)
-    const txnPattern = /^[a-zA-Z0-9]{8,24}$/;
-    if (!transactionId || !txnPattern.test(transactionId)) {
-        return res.status(400).json({ msg: 'Invalid Transaction ID. It should be 8-24 Alphanumeric characters.' });
+    // Validate Transaction ID (alphanumeric includes hyphens and T prefixes, 6-32 chars)
+    const txnPattern = /^[a-zA-Z0-9-]{6,32}$/;
+    if (!transactionId || !txnPattern.test(transactionId.trim())) {
+        console.log(`[DEBUG] Transaction ID validation failed: "${transactionId}"`);
+        return res.status(400).json({ msg: 'Invalid Transaction ID. Please enter the correct ID from your receipt.' });
     }
 
     // ALWAYS try to parse teamMembersDetails since frontend now sends it for both individual and team
