@@ -305,8 +305,8 @@ const EventDashboard = () => {
                                 Constantly check your <span style={{ color: 'var(--accent-primary)' }}>Mail ID</span> and <span style={{ color: 'var(--accent-primary)' }}>Account Profile</span> for status updates and event credentials.
                             </p>
                         </div>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
 
                 <pre style={{ color: 'white', fontSize: '0.6rem' }}>DEBUG: Found {events.length} total events</pre>
                 {/* Technical Events Section */}
