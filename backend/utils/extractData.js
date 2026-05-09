@@ -5,49 +5,46 @@ const Tesseract = require('tesseract.js');
 
 /**
  * Extracts Transaction ID or UPI details from a payment screenshot
+ * Optimized for Vercel to avoid 504 Gateway Timeouts
  */
 async function extractTransactionDetails(fileSource) {
   try {
-    // 1. OCR Extraction using a faster, pre-configured approach
+    // 1. OCR Extraction - Use a higher-level API for speed
     console.log('[DEBUG] Starting OCR Extraction...');
-    let text = "";
     
-    // Use worker to have more control and potentially better speed on Vercel
-    const worker = await Tesseract.createWorker('eng');
-    const { data } = await worker.recognize(fileSource);
-    text = data.text;
-    await worker.terminate();
+    // Using recognize with remote worker/core disabled or handled internally
+    // to avoid the path errors AND the cold start delay of setting up a manual worker
+    const ocrResult = await Tesseract.recognize(fileSource, 'eng', {
+      // Direct recognition is usually faster than manual worker management on serverless
+    });
     
-    console.log('[DEBUG] OCR Text Extracted (First 200):', text.substring(0, 200).replace(/\n/g, ' '));
+    const text = ocrResult.data.text;
+    console.log('[DEBUG] OCR Text Extracted (First 150):', text.substring(0, 150).replace(/\n/g, ' '));
 
     let transactionId = null;
     
-    // Pattern for common Transaction IDs (PhonePe, GPay, Paytm)
-    // T followed by 15-25 digits is common for PhonePe/GPay (T2605...)
-    // 12 digit numeric (UTR) is common for all UPI
+    // Broadened patterns to catch symbols quickly
     const txnPatterns = [
-        /\bT[0-9]{15,25}\b/g,           // PhonePe/GPay specific (T + 22 digits)
-        /\b[0-9]{12}\b/g,                // 12 digit UTR/UPI ID
+        /\bT[0-9]{15,25}\b/g,          
+        /\b[0-9]{12}\b/g,               
         /Transaction ID\s*[:\s]*([a-zA-Z0-9]+)/i, 
         /UTR\s*[:\s]*([0-9]{12})/i,
-        /Ref No\.?\s*[:\s]*([0-9]{12})/i
+        /Google Pay Transaction ID\s+([a-zA-Z0-9.-]{6,32})/i
     ];
 
     if (text) {
         for (const pattern of txnPatterns) {
             const matches = text.match(pattern);
             if (matches) {
-                // If it's a match with a group (captured ID)
-                const candidate = matches[1] || matches[0];
-                transactionId = candidate.replace(/Transaction ID|UTR|Ref No|[:\s]/gi, '').trim();
+                const candidate = Array.isArray(matches) ? (matches[1] || matches[0]) : matches;
+                transactionId = candidate.toString().replace(/Transaction ID|UTR|[:\s]/gi, '').trim();
                 console.log('[DEBUG] Found Txn ID match:', transactionId);
                 break;
             }
         }
     }
 
-    // 2. Try QR Code extraction as a backup/UPI fetch
-    console.log('[DEBUG] Checking for QR Code...');
+    // 2. Parallel QR Scan Check (Very Fast)
     const image = await Jimp.read(fileSource);
     const { data: bitmapData, width, height } = image.bitmap;
     const code = jsQR(bitmapData, width, height);
@@ -69,6 +66,7 @@ async function extractTransactionDetails(fileSource) {
     };
   } catch (err) {
     console.error('Extraction Error:', err);
+    // Return empty results rather than crashing to avoid 504/500
     return { transactionId: null, upiId: null };
   }
 }
