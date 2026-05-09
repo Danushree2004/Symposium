@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { QRCodeSVG } from "qrcode.react";
 import { motion } from "framer-motion";
-import { Ticket, Calendar, MapPin, Users, Upload, Send, ChevronLeft, Trophy, Plus, X, Phone, User as UserIcon, Building, CreditCard } from "lucide-react";
+import { Ticket, Calendar, MapPin, Users, Upload, Send, ChevronLeft, Trophy, Plus, X, Phone, User as UserIcon, Building, CreditCard, Loader2 } from "lucide-react";
+import Tesseract from 'tesseract.js';
 
 const EventDetail = () => {
     const { eventId } = useParams();
@@ -115,26 +116,35 @@ const EventDetail = () => {
         
         setFile(selectedFile);
         
-        // Auto-extract Transaction ID if it's an image
+        // Auto-extract Transaction ID using CLIENT-SIDE OCR (Faster & More Reliable)
         if (selectedFile.type.startsWith('image/')) {
             setExtracting(true);
-            const token = localStorage.getItem("token");
-            const extractData = new FormData();
-            extractData.append("paymentProof", selectedFile);
-            
             try {
-                const res = await axios.post("/api/events/extract-transaction", extractData, {
-                    headers: { 
-                        "Content-Type": "multipart/form-data",
-                        "x-auth-token": token 
+                console.log('[DEBUG] Starting Client-Side OCR...');
+                const { data: { text } } = await Tesseract.recognize(selectedFile, 'eng');
+                console.log('[DEBUG] Extracted Text:', text.substring(0, 100));
+
+                // Same detection logic as backend but running in the browser
+                const txnPatterns = [
+                    /\bT[0-9]{15,25}\b/g,          
+                    /\b[0-9]{12}\b/g,               
+                    /Transaction ID\s*[:\s]*([a-zA-Z0-9]+)/i, 
+                    /UTR\s*[:\s]*([0-9]{12})/i,
+                    /Google Pay Transaction ID\s+([a-zA-Z0-9.-]{6,32})/i
+                ];
+
+                for (const pattern of txnPatterns) {
+                    const matches = text.match(pattern);
+                    if (matches) {
+                        const candidate = Array.isArray(matches) ? (matches[1] || matches[0]) : matches;
+                        const cleanId = candidate.toString().replace(/Transaction ID|UTR|[:\s]/gi, '').trim();
+                        setFormData(prev => ({ ...prev, transactionId: cleanId }));
+                        console.log('[DEBUG] Found Txn ID:', cleanId);
+                        break;
                     }
-                });
-                
-                if (res.data.transactionId) {
-                    setFormData(prev => ({ ...prev, transactionId: res.data.transactionId }));
                 }
             } catch (err) {
-                console.error("Auto-extraction failed:", err);
+                console.error("Client-Side extraction failed:", err);
             } finally {
                 setExtracting(false);
             }
