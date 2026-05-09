@@ -23,6 +23,7 @@ const EventDetail = () => {
     const [teamMembers, setTeamMembers] = useState([{ name: "", college: "", phone: "" }]);
     const [file, setFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+    const [extracting, setExtracting] = useState(false);
     const [showQR, setShowQR] = useState(false);
 
     // Dynamic UPI URL Generation
@@ -106,6 +107,38 @@ const EventDetail = () => {
         const updated = [...teamMembers];
         updated[index][field] = value;
         setTeamMembers(updated);
+    };
+
+    const handleFileChange = async (e) => {
+        const selectedFile = e.target.files[0];
+        if (!selectedFile) return;
+        
+        setFile(selectedFile);
+        
+        // Auto-extract Transaction ID if it's an image
+        if (selectedFile.type.startsWith('image/')) {
+            setExtracting(true);
+            const token = localStorage.getItem("token");
+            const extractData = new FormData();
+            extractData.append("paymentProof", selectedFile);
+            
+            try {
+                const res = await axios.post("/api/events/extract-transaction", extractData, {
+                    headers: { 
+                        "Content-Type": "multipart/form-data",
+                        "x-auth-token": token 
+                    }
+                });
+                
+                if (res.data.transactionId) {
+                    setFormData(prev => ({ ...prev, transactionId: res.data.transactionId }));
+                }
+            } catch (err) {
+                console.error("Auto-extraction failed:", err);
+            } finally {
+                setExtracting(false);
+            }
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -352,10 +385,10 @@ const EventDetail = () => {
                                                 borderRadius: "16px", 
                                                 display: "flex", 
                                                 flexDirection: "column", 
-                                                alignItems: "center",
-                                                gap: "1rem",
-                                                boxShadow: "0 0 30px rgba(0,210,255,0.3)",
-                                                zIndex: 10 
+                                                alignItems: "center",{extracting ? "EXTRACTING ID..." : "TRANSACTION ID"} value={formData.transactionId} onChange={(e) => setFormData({...formData, transactionId: e.target.value})} />
+                                    <div className="input-group">
+                                        <label style={{ fontSize: "0.7rem", opacity: 0.5, marginBottom: "0.5rem", display: "block" }}>PAYMENT PROOF (PDF/IMAGE)</label>
+                                        <input type="file" required className="input-cyber" style={{ padding: "0.6rem" }} onChange={handleFileChange
                                             }}
                                         >
                                             <div style={{ padding: "10px", background: "white", borderRadius: "8px" }}>

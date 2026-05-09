@@ -7,6 +7,7 @@ const auth = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
 const sendEmail = require('../utils/sendEmail');
+const { extractTransactionDetails } = require('../utils/extractData');
 
 const os = require('os');
 
@@ -34,6 +35,24 @@ router.get('/', async (req, res) => {
   } catch (err) {
     console.error('[DEBUG] GET /events Error:', err.message);
     res.status(500).json({ error: 'Failed to fetch events: ' + err.message });
+  }
+});
+
+// Extract Transaction ID from image
+router.post('/extract-transaction', auth, upload.single('paymentProof'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ msg: 'No file uploaded' });
+    
+    // For Vercel, use buffer. For local, we'd need to read from disk if using diskStorage.
+    const source = process.env.VERCEL ? req.file.buffer : req.file.path;
+    const details = await extractTransactionDetails(source);
+    
+    // Note: Since we don't have full OCR (Tesseract), we return what we can find.
+    // In many cases, users screenshot the "Payment Successful" screen which has a QR.
+    res.json(details);
+  } catch (err) {
+    console.error('Extraction Route Error:', err);
+    res.status(500).json({ error: 'Failed to extract data' });
   }
 });
 
