@@ -190,30 +190,20 @@ const EventDashboard = () => {
                 
                 {/* About Orion Section */}
                 <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                     style={{ marginBottom: '5rem', background: 'rgba(255, 255, 255, 0.02)', padding: '4rem 3rem', borderRadius: '32px', border: '1px solid rgba(255, 255, 255, 0.08)', position: 'relative', overflow: 'hidden' }}
                 >
                     <div style={{ position: 'absolute', top: 0, right: 0, padding: '1rem', background: 'var(--accent-primary)', color: 'black', fontSize: '0.7rem', fontWeight: 900, borderBottomLeftRadius: '20px', letterSpacing: '2px' }}>ESTD. 2027</div>
                     
-                    {/* Animated Background Glow */}
-                    <motion.div 
-                        animate={{ 
-                            opacity: [0.1, 0.3, 0.1],
-                            scale: [1, 1.2, 1]
-                        }}
-                        transition={{ duration: 8, repeat: Infinity }}
-                        style={{ position: 'absolute', top: '-20%', left: '-10%', width: '40%', height: '80%', background: 'radial-gradient(circle, var(--accent-primary) 0%, transparent 70%)', filter: 'blur(80px)', zIndex: -1 }}
-                    />
-
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', alignItems: 'center' }}>
                         <div style={{ flex: '1 1 400px' }}>
                             <motion.h2 
-                                initial={{ x: -50, opacity: 0 }}
-                                whileInView={{ x: 0, opacity: 1 }}
-                                transition={{ delay: 0.2 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
                                 style={{ color: 'white', fontSize: '2.5rem', fontWeight: 900, marginBottom: '1.5rem', letterSpacing: '2px' }}
                             >
                                 ABOUT <span style={{ color: 'var(--accent-primary)' }}>ORION 2027</span>
@@ -223,52 +213,51 @@ const EventDashboard = () => {
                                 Designed as a battlefield for technology enthusiasts, Orion 2027 brings together the brightest minds to compete, collaborate, and innovate. 
                             </p>
                             <div style={{ display: 'flex', gap: '2rem' }}>
-                                {[
-                                    { label: 'Technical Events', value: '15+' },
-                                    { label: 'Operatives', value: '1000+' },
-                                    { label: 'Prize Pool', value: '₹50K+' }
-                                ].map((stat, i) => (
-                                    <React.Fragment key={i}>
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 20 }}
-                                            whileInView={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.4 + (i * 0.1) }}
-                                        >
-                                            <div style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 900 }}>{stat.value}</div>
-                                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{stat.label}</div>
-                                        </motion.div>
-                                        {i < 2 && <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }}></div>}
-                                    </React.Fragment>
-                                ))}
+                                <motion.div whileHover={{ scale: 1.1, color: 'var(--accent-primary)' }}>
+                                    <div style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 900 }}>15+</div>
+                                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Technical Events</div>
+                                </motion.div>
+                                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
+                                <motion.div whileHover={{ scale: 1.1, color: 'var(--accent-primary)' }}>
+                                    <div style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 900 }}>1000+</div>
+                                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Operatives</div>
+                                </motion.div>
+                                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
+                                <motion.div whileHover={{ scale: 1.1, color: 'var(--accent-primary)' }}>
+                                    <div style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 900 }}>₹50K+</div>
+                                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Prize Pool</div>
+                                </motion.div>
                             </div>
                         </div>
-                        
                         <div style={{ flex: '1 1 300px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                            {[
-                                { icon: <Trophy size={24} />, label: 'EXCELLENCE', color: 'var(--accent-primary)' },
-                                { icon: <Cpu size={24} />, label: 'INNOVATION', color: '#ff4080' },
-                                { icon: <Zap size={24} />, label: 'SPEED', color: 'white' },
-                                { icon: <Shield size={24} />, label: 'INTEGRITY', color: 'var(--accent-primary)' }
-                            ].map((card, i) => (
-                                <motion.div 
-                                    key={i}
-                                    className="glass-card" 
-                                    whileHover={{ scale: 1.05, y: -5, boxShadow: `0 10px 30px rgba(0, 210, 255, 0.2)` }}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: 0.6 + (i * 0.1) }}
-                                    style={{ padding: '1.5rem', textAlign: 'center', border: `1px solid ${card.color}33`, cursor: 'pointer' }}
-                                >
-                                    <div style={{ color: card.color, marginBottom: '0.5rem' }}>{card.icon}</div>
-                                    <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'white' }}>{card.label}</div>
-                                </motion.div>
-                            ))}
+                            <motion.div whileHover={{ scale: 1.05, rotate: 2 }} whileTap={{ scale: 0.95 }} className="glass-card" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid rgba(0, 210, 255, 0.2)', cursor: 'pointer' }}>
+                                <div style={{ color: 'var(--accent-primary)', marginBottom: '0.5rem' }}><Trophy size={24} /></div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'white' }}>EXCELLENCE</div>
+                            </motion.div>
+                            <motion.div whileHover={{ scale: 1.05, rotate: -2 }} whileTap={{ scale: 0.95 }} className="glass-card" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid rgba(255, 64, 128, 0.2)', cursor: 'pointer' }}>
+                                <div style={{ color: '#ff4080', marginBottom: '0.5rem' }}><Cpu size={24} /></div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'white' }}>INNOVATION</div>
+                            </motion.div>
+                            <motion.div whileHover={{ scale: 1.05, rotate: 2 }} whileTap={{ scale: 0.95 }} className="glass-card" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid rgba(255, 255, 255, 0.1)', cursor: 'pointer' }}>
+                                <div style={{ color: 'white', marginBottom: '0.5rem' }}><Zap size={24} /></div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'white' }}>SPEED</div>
+                            </motion.div>
+                            <motion.div whileHover={{ scale: 1.05, rotate: -2 }} whileTap={{ scale: 0.95 }} className="glass-card" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid var(--accent-primary)', cursor: 'pointer' }}>
+                                <div style={{ color: 'var(--accent-primary)', marginBottom: '0.5rem' }}><Shield size={24} /></div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'white' }}>INTEGRITY</div>
+                            </motion.div>
                         </div>
                     </div>
                 </motion.div>
 
                 {/* General Protocols Section */}
-                <div style={{ marginBottom: '5rem', background: 'rgba(255, 255, 255, 0.02)', padding: '4rem 3rem', borderRadius: '32px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+                <motion.div 
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    style={{ marginBottom: '5rem', background: 'rgba(255, 255, 255, 0.02)', padding: '4rem 3rem', borderRadius: '32px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
+                >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
                         <div style={{ height: '2px', width: '60px', background: 'linear-gradient(to left, var(--accent-primary), transparent)' }}></div>
                         <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 800, letterSpacing: '6px', margin: 0, textAlign: 'center', textTransform: 'uppercase' }}>GENERAL PROTOCOLS</h2>
@@ -276,29 +265,34 @@ const EventDashboard = () => {
                     </div>
                     
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem' }}>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                        <motion.div whileHover={{ scale: 1.05, backgroundColor: 'rgba(0, 210, 255, 0.05)' }} className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                             <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Users size={32} /></div>
                             <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>INITIALIZE</h4>
                             <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Create your Neural Profile (Account) to access all event registration modules.</p>
-                        </div>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05, backgroundColor: 'rgba(0, 210, 255, 0.05)' }} className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                             <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Ticket size={32} /></div>
                             <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>BASE FEE</h4>
                             <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Pay a one-time ₹200 fee for the first event; all subsequent events are FREE.</p>
-                        </div>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05, backgroundColor: 'rgba(0, 210, 255, 0.05)' }} className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                             <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Upload size={32} /></div>
                             <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>AUTO SCAN</h4>
                             <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Upload your payment screenshot; our AI extracts the Transaction ID instantly.</p>
-                        </div>
-                        <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05, backgroundColor: 'rgba(0, 210, 255, 0.05)' }} className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                             <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Trophy size={32} /></div>
                             <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>CERTIFICATION</h4>
                             <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Download your participation certificate from the Vault (Dashboard) after the event.</p>
-                        </div>
+                        </motion.div>
                     </div>
 
-                    <div style={{ marginTop: '3rem', padding: '1.5rem 2rem', borderRadius: '16px', background: 'rgba(255, 64, 128, 0.08)', border: '1px solid rgba(255, 64, 128, 0.3)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        style={{ marginTop: '3rem', padding: '1.5rem 2rem', borderRadius: '16px', background: 'rgba(255, 64, 128, 0.08)', border: '1px solid rgba(255, 64, 128, 0.3)', display: 'flex', flexDirection: 'column', gap: '1rem' }}
+                    >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                             <div style={{ background: '#ff4080', color: 'white', padding: '8px 16px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Limit Notice</div>
                             <p style={{ color: '#ffecf1', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.5px' }}>
