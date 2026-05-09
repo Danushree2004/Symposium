@@ -385,10 +385,10 @@ const EventDetail = () => {
                                                 borderRadius: "16px", 
                                                 display: "flex", 
                                                 flexDirection: "column", 
-                                                alignItems: "center",{extracting ? "EXTRACTING ID..." : "TRANSACTION ID"} value={formData.transactionId} onChange={(e) => setFormData({...formData, transactionId: e.target.value})} />
-                                    <div className="input-group">
-                                        <label style={{ fontSize: "0.7rem", opacity: 0.5, marginBottom: "0.5rem", display: "block" }}>PAYMENT PROOF (PDF/IMAGE)</label>
-                                        <input type="file" required className="input-cyber" style={{ padding: "0.6rem" }} onChange={handleFileChange
+                                                alignItems: "center",
+                                                gap: "1rem",
+                                                boxShadow: "0 0 30px rgba(0,210,255,0.3)",
+                                                zIndex: 10 
                                             }}
                                         >
                                             <div style={{ padding: "10px", background: "white", borderRadius: "8px" }}>
@@ -417,10 +417,10 @@ const EventDetail = () => {
                                         </motion.div>
                                     )}
 
-                                    <input className="input-cyber" type="text" required placeholder="TRANSACTION ID" value={formData.transactionId} onChange={(e) => setFormData({...formData, transactionId: e.target.value})} />
+                                    <input className="input-cyber" type="text" required placeholder={extracting ? "EXTRACTING ID..." : "TRANSACTION ID"} value={formData.transactionId} onChange={(e) => setFormData({...formData, transactionId: e.target.value})} />
                                     <div className="input-group">
                                         <label style={{ fontSize: "0.7rem", opacity: 0.5, marginBottom: "0.5rem", display: "block" }}>PAYMENT PROOF (PDF/IMAGE)</label>
-                                        <input type="file" required className="input-cyber" style={{ padding: "0.6rem" }} onChange={(e) => setFile(e.target.files[0])} />
+                                        <input type="file" required className="input-cyber" style={{ padding: "0.6rem" }} onChange={handleFileChange} />
                                     </div>
                                 </>
                             ) : (
