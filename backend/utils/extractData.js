@@ -15,7 +15,8 @@ async function extractTransactionDetails(fileSource) {
     // Using recognize with remote worker/core disabled or handled internally
     // to avoid the path errors AND the cold start delay of setting up a manual worker
     const ocrResult = await Tesseract.recognize(fileSource, 'eng', {
-      // Direct recognition is usually faster than manual worker management on serverless
+      gzip: false, // Potentially faster loading on serverless
+      errorHandler: e => console.error(e)
     });
     
     const text = ocrResult.data.text;
