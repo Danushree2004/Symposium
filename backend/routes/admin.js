@@ -69,14 +69,27 @@ async function extractUpiFromQR(fileSource) {
 // Get Symposium Settings
 router.get('/settings', async (req, res) => {
   try {
+    console.log('[DEBUG] GET /settings requested');
     let settings = await Settings.findOne({ key: 'symposium_config' });
     if (!settings) {
-      settings = new Settings({ key: 'symposium_config', value: { upiId: '919994645063@ybl', baseAmount: 200 } });
+      console.log('[DEBUG] Settings not found, creating default');
+      settings = new Settings({ 
+        key: 'symposium_config', 
+        value: { 
+          upiId: '919994645063@ybl', 
+          baseAmount: 200,
+          qrCode: '',
+          venue: 'MCA CC 1 Lab',
+          contactEmail: 'admin@orion.com'
+        } 
+      });
       await settings.save();
     }
+    console.log('[DEBUG] Returning settings:', settings.value);
     res.json(settings.value);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('[CRITICAL] GET /settings error:', err);
+    res.status(500).json({ error: 'Internal Server Error', details: err.message });
   }
 });
 
