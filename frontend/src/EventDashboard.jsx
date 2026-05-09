@@ -256,60 +256,53 @@ const EventDashboard = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    style={{ 
-                        marginBottom: '3rem', 
-                        background: 'rgba(255, 255, 255, 0.02)', 
-                        padding: '2rem 1.5rem', 
-                        borderRadius: '24px', 
-                        border: '1px solid rgba(255, 255, 255, 0.08)', 
-                        boxShadow: '0 20px 50px rgba(0,0,0,0.5)' 
-                    }}
+                    style={{ marginBottom: '5rem', background: 'rgba(255, 255, 255, 0.02)', padding: '4rem 3rem', borderRadius: '32px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
                 >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem', marginBottom: '2rem' }}>
-                        <div style={{ height: '1px', width: '30px', background: 'linear-gradient(to left, var(--accent-primary), transparent)' }}></div>
-                        <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.2rem', fontWeight: 800, letterSpacing: '3px', margin: 0, textAlign: 'center', textTransform: 'uppercase' }}>PROTOCOLS</h2>
-                        <div style={{ height: '1px', width: '30px', background: 'linear-gradient(to right, var(--accent-primary), transparent)' }}></div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
+                        <div style={{ height: '2px', width: '60px', background: 'linear-gradient(to left, var(--accent-primary), transparent)' }}></div>
+                        <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 800, letterSpacing: '6px', margin: 0, textAlign: 'center', textTransform: 'uppercase' }}>GENERAL PROTOCOLS</h2>
+                        <div style={{ height: '2px', width: '60px', background: 'linear-gradient(to right, var(--accent-primary), transparent)' }}></div>
                     </div>
                     
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem' }}>
-                        <motion.div whileHover={{ scale: 1.02 }} className="glass-card" style={{ padding: '1.2rem 1rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '0.8rem', display: 'flex', justifyContent: 'center' }}><Users size={24} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px' }}>INITIALIZE</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', lineHeight: '1.4' }}>Create profile to start.</p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem' }}>
+                        <motion.div whileHover={{ scale: 1.05, backgroundColor: 'rgba(0, 210, 255, 0.05)' }} className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Users size={32} /></div>
+                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>INITIALIZE</h4>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Create your Neural Profile (Account) to access all event registration modules.</p>
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.02 }} className="glass-card" style={{ padding: '1.2rem 1rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '0.8rem', display: 'flex', justifyContent: 'center' }}><Ticket size={24} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px' }}>BASE FEE</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', lineHeight: '1.4' }}>₹200 one-time fee.</p>
+                        <motion.div whileHover={{ scale: 1.05, backgroundColor: 'rgba(0, 210, 255, 0.05)' }} className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Ticket size={32} /></div>
+                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>BASE FEE</h4>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Pay a one-time ₹200 fee for the first event; all subsequent events are FREE.</p>
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.02 }} className="glass-card" style={{ padding: '1.2rem 1rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '0.8rem', display: 'flex', justifyContent: 'center' }}><Upload size={24} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px' }}>AUTO SCAN</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', lineHeight: '1.4' }}>AI extracts Txn ID.</p>
+                        <motion.div whileHover={{ scale: 1.05, backgroundColor: 'rgba(0, 210, 255, 0.05)' }} className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Upload size={32} /></div>
+                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>AUTO SCAN</h4>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Upload your payment screenshot; our AI extracts the Transaction ID instantly.</p>
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.02 }} className="glass-card" style={{ padding: '1.2rem 1rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ color: 'var(--accent-primary)', marginBottom: '0.8rem', display: 'flex', justifyContent: 'center' }}><Trophy size={24} /></div>
-                            <h4 style={{ color: 'white', marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px' }}>REWARDS</h4>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', lineHeight: '1.4' }}>Get certificates.</p>
+                        <motion.div whileHover={{ scale: 1.05, backgroundColor: 'rgba(0, 210, 255, 0.05)' }} className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                            <div style={{ color: 'var(--accent-primary)', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}><Trophy size={32} /></div>
+                            <h4 style={{ color: 'white', marginBottom: '0.8rem', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '1px' }}>CERTIFICATION</h4>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.5' }}>Download your participation certificate from the Vault (Dashboard) after the event.</p>
                         </motion.div>
                     </div>
 
                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.95 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        style={{ marginTop: '2rem', padding: '1.2rem', borderRadius: '16px', background: 'rgba(255, 64, 128, 0.08)', border: '1px solid rgba(255, 64, 128, 0.3)', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}
+                        style={{ marginTop: '3rem', padding: '1.5rem 2rem', borderRadius: '16px', background: 'rgba(255, 64, 128, 0.08)', border: '1px solid rgba(255, 64, 128, 0.3)', display: 'flex', flexDirection: 'column', gap: '1rem' }}
                     >
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                            <div style={{ background: '#ff4080', color: 'white', padding: '4px 8px', borderRadius: '4px', fontSize: '0.6rem', fontWeight: 900, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Limit</div>
-                            <p style={{ color: '#ffecf1', fontWeight: 600, fontSize: '0.8rem', margin: 0, lineHeight: '1.4' }}>
-                                Max <span style={{ color: '#ff4080', fontWeight: 900 }}>2 events</span> per operative.
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                            <div style={{ background: '#ff4080', color: 'white', padding: '8px 16px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Limit Notice</div>
+                            <p style={{ color: '#ffecf1', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.5px' }}>
+                                One operative can participate in a <span style={{ color: '#ff4080', fontWeight: 900, textDecoration: 'underline' }}>MAXIMUM of 2</span> events.
                             </p>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                            <div style={{ background: 'var(--accent-primary)', color: 'black', padding: '4px 8px', borderRadius: '4px', fontSize: '0.6rem', fontWeight: 900, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Alert</div>
-                            <p style={{ color: 'white', fontWeight: 600, fontSize: '0.8rem', margin: 0, lineHeight: '1.4' }}>
-                                Check <span style={{ color: 'var(--accent-primary)' }}>Mail</span> & <span style={{ color: 'var(--accent-primary)' }}>Profile</span> for updates.
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                            <div style={{ background: 'var(--accent-primary)', color: 'black', padding: '8px 16px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Attention</div>
+                            <p style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.5px' }}>
+                                Constantly check your <span style={{ color: 'var(--accent-primary)' }}>Mail ID</span> and <span style={{ color: 'var(--accent-primary)' }}>Account Profile</span> for status updates and event credentials.
                             </p>
                         </div>
                     </motion.div>
