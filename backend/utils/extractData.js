@@ -1,7 +1,6 @@
 const jimp = require('jimp');
 const { Jimp } = jimp;
 const jsQR = require('jsqr');
-const Tesseract = require('tesseract.js');
 
 /**
  * Extracts Transaction ID or UPI details from a payment screenshot
@@ -10,23 +9,54 @@ const Tesseract = require('tesseract.js');
  */
 async function extractTransactionDetails(fileSource) {
   try {
-    // 1. Try OCR first to find Transaction ID patterns
-    console.log('[DEBUG] Starting OCR Extraction...');
+    // 1. Try QR Code extraction first (Highly reliable for Transaction IDs embedded in QRs)
+    console.log('[DEBUG] Reading image for QR/Data extraction...');
+    const image = await Jimp.read(fileSource);
+    const { data, width, height } = image.bitmap;
+    const code = jsQR(data, width, height);
     
-    let text = "";
-    try {
-        // Use recognize with local core load disabled to force Tesseract to handle its own fetching
-        // But since Tesseract is notoriously difficult on Vercel Node runtimes, 
-        // we wrap it in a strict try-catch to allow QR backup to work if OCR fails.
-        const ocrResult = await Tesseract.recognize(fileSource, 'eng');
-        text = ocrResult.data.text;
-        console.log('[DEBUG] OCR Text Extracted (First 100):', text.substring(0, 100));
-    } catch (ocrErr) {
-        console.error('[OCR ERROR] Tesseract failed, falling back to QR scan:', ocrErr.message);
-        // If Tesseract crashes (like the ENOENT error), we continue to QR extraction
+    let transactionId = null;
+    let extractedUpi = null;
+
+    if (code && code.data) {
+      const url = code.data;
+      console.log('[DEBUG] QR Code detected:', url);
+
+      // Handle UPI URLs: upi://pay?pa=...&tr=TRANSACTION_ID...
+      if (url.startsWith('upi://')) {
+        try {
+            const urlParsed = new URL(url);
+            const params = new URLSearchParams(urlParsed.search);
+            
+            // Extract UPI ID (pa)
+            extractedUpi = params.get('pa');
+            
+            // Extract Transaction Reference ID (tr) - Extremely common in dynamic QRs
+            transactionId = params.get('tr') || params.get('tid');
+            
+            console.log('[DEBUG] Extracted from QR UPI URL:', { extractedUpi, transactionId });
+        } catch (e) {
+            // Fallback for malformed URLs
+            if (url.includes('tr=')) {
+                transactionId = url.split('tr=')[1]?.split('&')[0];
+            }
+        }
+      } else if (url.includes('@')) {
+        extractedUpi = url.trim();
+      } else if (/^[a-zA-Z0-9-]{12,32}$/.test(url)) {
+        // If the QR just contains a string that looks like a Txn ID
+        transactionId = url;
+      }
     }
 
-    let transactionId = null;
+    // 2. Note: OCR (Tesseract) is disabled for Vercel stability 
+    // due to WASM ENOENT errors in serverless function environments.
+    // We rely on the QR data which is the primary source for modern payment apps.
+    
+    return {
+      transactionId: transactionId,
+      upiId: extractedUpi
+    };
     
     if (text) {
         // Pattern for common Transaction IDs (UPI/Bank)
