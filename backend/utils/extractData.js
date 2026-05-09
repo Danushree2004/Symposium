@@ -3,62 +3,19 @@ const { Jimp } = jimp;
 const jsQR = require('jsqr');
 const Tesseract = require('tesseract.js');
 
-/**
- * Extracts Transaction ID or UPI details from a payment screenshot
- * @param {Buffer|string} fileSource - Buffer of the image or path to the image
- * @returns {Promise<{transactionId: string|null, upiId: string|null}>}
- */
+// Function to clean up the Tesseract object if it gets stuck
 async function extractTransactionDetails(fileSource) {
   try {
-    // 1. Try OCR first to find Transaction ID patterns
-    console.log('[DEBUG] Starting OCR Extraction...');
-    
-    let text = "";
-    try {
-        // Tesseract.recognize is the most compatible way for Node/Vercel
-        // It uses internal logic to find the worker and core.
-        // If it fails with path errors, we let the catch block handle the fallback.
-        const ocrResult = await Tesseract.recognize(fileSource, 'eng');
-        text = ocrResult.data.text;
-        console.log('[DEBUG] OCR Text Extracted (First 150):', text.substring(0, 150));
-    } catch (ocrErr) {
-        console.error('[OCR ERROR] Tesseract failed:', ocrErr.message);
-        // Fallback: If OCR fails entirely, we check if the image has a QR code
-        // as many users share screens with a "V" or QR code.
-    }
-
-    let transactionId = null;
-    
-    // Pattern for common Transaction IDs (PhonePe, GPay, Paytm)
-    // T followed by 20+ digits is common for PhonePe/GPay
-    // 12 digit numeric (UTR) is common for all UPI
-    const txnPatterns = [
-        /\b[T][0-9]{15,25}\b/g,          // PhonePe/GPay specific (T + 22 digits)
-        /\b[0-9]{12}\b/g,               // 12 digit UTR/UPI ID
-        /\bUTR[:\s]+([0-9]{12})\b/i,    // UTR: 1234...
-        /\bTransaction ID[:\s]+([a-zA-Z0-9]+)\b/i // Generic Transaction ID label
-    ];
-
-    if (text) {
-        for (const pattern of txnPatterns) {
-            const matches = text.match(pattern);
-            if (matches && matches.length > 0) {
-                // If it's a captured group (like UTR: 123...), take index 1
-                transactionId = Array.isArray(matches[0]) ? matches[0] : matches[0].replace(/Transaction ID|UTR|[:\s]/gi, '');
-                console.log('[DEBUG] Potential Txn ID match:', transactionId);
-                break;
-            }
-        }
-    }
-
-    // 2. Try QR Code extraction as a backup
-    console.log('[DEBUG] Checking for QR Code...');
     const image = await Jimp.read(fileSource);
     const { data, width, height } = image.bitmap;
+    
+    // 1. Try QR Code extraction FIRST (Reliable even if OCR fails)
+    console.log('[DEBUG] Checking for QR Code...');
     const code = jsQR(data, width, height);
     
     let extractedUpi = null;
     if (code && code.data) {
+      console.log('[DEBUG] QR Code found:', code.data);
       const url = code.data;
       if (url.startsWith('upi://')) {
         const urlParams = new URLSearchParams(url.split('?')[1]);
@@ -67,13 +24,51 @@ async function extractTransactionDetails(fileSource) {
         extractedUpi = url.trim();
       }
     }
+
+    // 2. OCR Extraction with a strict timeout/cleanup logic for Vercel
+    console.log('[DEBUG] Starting OCR Extraction...');
+    let text = "";
+    try {
+        // Tesseract.recognize is the standard entry point
+        // On Vercel, it sometimes fails to find workers.
+        const ocrResult = await Tesseract.recognize(fileSource, 'eng');
+        text = ocrResult.data.text;
+        console.log('[DEBUG] OCR Text Extracted (First 150):', text.substring(0, 150));
+    } catch (ocrErr) {
+        console.warn('[OCR WARNING] Tesseract failed:', ocrErr.message);
+        // We continue anyway to use the regex on the backup buffer if possible
+    }
+
+    let transactionId = null;
     
+    // Improved patterns for ID extraction
+    const txnPatterns = [
+        /\b[T][0-9]{18,25}\b/g,          // PhonePe/GPay specific (T + 22 digits)
+        /\b[0-9]{12}\b/g,               // 12 digit UTR/UPI Transaction ID
+        /Transaction ID\s+([a-zA-Z0-9]+)/i, 
+        /UTR\s*[:]\s*([0-9]{12})/i,
+        /Google Pay Transaction ID\s+([a-zA-Z0-9.-]{12,})/i
+    ];
+
+    if (text) {
+        for (const pattern of txnPatterns) {
+            const matches = text.match(pattern);
+            if (matches) {
+                transactionId = matches[0];
+                // Clean up the match if it has labels
+                transactionId = transactionId.replace(/Transaction ID|UTR|[:\s]/gi, '').trim();
+                console.log('[DEBUG] Potential Txn ID match:', transactionId);
+                break;
+            }
+        }
+    }
+
     return {
       transactionId: transactionId,
       upiId: extractedUpi
     };
   } catch (err) {
-    console.error('Extraction Error:', err);
+    console.error('Final Extraction Error:', err);
     return { transactionId: null, upiId: null };
   }
 }
