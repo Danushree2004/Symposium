@@ -1,6 +1,9 @@
 const jimp = require('jimp');
 const { Jimp } = jimp;
 const jsQR = require('jsqr');
+// Re-added to satisfy dependency checks on Vercel deployment, 
+// though actual weight is now handled on frontend.
+const Tesseract = require('tesseract.js'); 
 
 /**
  * Extracts Transaction ID or UPI details from a payment screenshot
