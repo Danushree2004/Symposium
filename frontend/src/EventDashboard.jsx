@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Ticket, MapPin, Calendar, Info, Users, Upload, Send, Trophy, X, ChevronRight } from 'lucide-react';
+import { Ticket, MapPin, Calendar, Info, Users, Upload, Send, Trophy, X, ChevronRight, Cpu, Zap, Shield } from 'lucide-react';
 
 const EventDashboard = () => {
     const [events, setEvents] = useState([]);
