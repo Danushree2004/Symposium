@@ -188,6 +188,58 @@ const EventDashboard = () => {
             {/* Content Section */}
             <div className="container" id="events" style={{ minHeight: '100vh', paddingBottom: '100px' }}>
                 
+                {/* About Orion Section */}
+                <div style={{ marginBottom: '5rem', background: 'rgba(255, 255, 255, 0.02)', padding: '4rem 3rem', borderRadius: '32px', border: '1px solid rgba(255, 255, 255, 0.08)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: 0, right: 0, padding: '1rem', background: 'var(--accent-primary)', color: 'black', fontSize: '0.7rem', fontWeight: 900, borderBottomLeftRadius: '20px', letterSpacing: '2px' }}>ESTD. 2027</div>
+                    
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', alignItems: 'center' }}>
+                        <div style={{ flex: '1 1 400px' }}>
+                            <h2 style={{ color: 'white', fontSize: '2.5rem', fontWeight: 900, marginBottom: '1.5rem', letterSpacing: '2px' }}>
+                                ABOUT <span style={{ color: 'var(--accent-primary)' }}>ORION 2027</span>
+                            </h2>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: '1.8', marginBottom: '2rem', textAlign: 'justify' }}>
+                                ORION is the flagship technical symposium organized by the Department of Computer Applications (MCA) at Kongu Engineering College. 
+                                Designed as a battlefield for technology enthusiasts, Orion 2027 brings together the brightest minds to compete, collaborate, and innovate. 
+                                Our mission is to bridge the gap between academic theory and industrial evolution through high-octane technical challenges and creative problem-solving modules.
+                            </p>
+                            <div style={{ display: 'flex', gap: '2rem' }}>
+                                <div>
+                                    <div style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 900 }}>15+</div>
+                                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Technical Events</div>
+                                </div>
+                                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
+                                <div>
+                                    <div style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 900 }}>1000+</div>
+                                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Operatives</div>
+                                </div>
+                                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
+                                <div>
+                                    <div style={{ color: 'var(--accent-primary)', fontSize: '1.8rem', fontWeight: 900 }}>₹50K+</div>
+                                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Prize Pool</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{ flex: '1 1 300px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                            <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid rgba(0, 210, 255, 0.2)' }}>
+                                <div style={{ color: 'var(--accent-primary)', marginBottom: '0.5rem' }}><Trophy size={24} /></div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'white' }}>EXCELLENCE</div>
+                            </div>
+                            <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid rgba(255, 64, 128, 0.2)' }}>
+                                <div style={{ color: '#ff4080', marginBottom: '0.5rem' }}><Cpu size={24} /></div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'white' }}>INNOVATION</div>
+                            </div>
+                            <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                                <div style={{ color: 'white', marginBottom: '0.5rem' }}><Zap size={24} /></div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'white' }}>SPEED</div>
+                            </div>
+                            <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid var(--accent-primary)' }}>
+                                <div style={{ color: 'var(--accent-primary)', marginBottom: '0.5rem' }}><Shield size={24} /></div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'white' }}>INTEGRITY</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* General Protocols Section */}
                 <div style={{ marginBottom: '5rem', background: 'rgba(255, 255, 255, 0.02)', padding: '4rem 3rem', borderRadius: '32px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
@@ -219,14 +271,18 @@ const EventDashboard = () => {
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '3rem', padding: '1.5rem 2rem', borderRadius: '16px', background: 'rgba(0, 210, 255, 0.05)', border: '1px solid rgba(0, 210, 255, 0.2)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <div style={{ background: 'var(--accent-primary)', color: 'black', padding: '4px 12px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase' }}>Registration Flow</div>
-                            <p style={{ color: 'white', fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>Register Account → Choose Event → Pay & Scan QR → Submit → View in Profile</p>
+                    <div style={{ marginTop: '3rem', padding: '1.5rem 2rem', borderRadius: '16px', background: 'rgba(255, 64, 128, 0.08)', border: '1px solid rgba(255, 64, 128, 0.3)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                            <div style={{ background: '#ff4080', color: 'white', padding: '8px 16px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Limit Notice</div>
+                            <p style={{ color: '#ffecf1', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.5px' }}>
+                                One operative can participate in a <span style={{ color: '#ff4080', fontWeight: 900, textDecoration: 'underline' }}>MAXIMUM of 2</span> events.
+                            </p>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <div style={{ background: '#ff4080', color: 'white', padding: '4px 12px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase' }}>Event Limits</div>
-                            <p style={{ color: '#ffecf1', fontWeight: 600, fontSize: '0.85rem', margin: 0 }}>One account can participate in a <span style={{ color: '#ff4080', fontWeight: 900, textDecoration: 'underline' }}>MAXIMUM of 2</span> events.</p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                            <div style={{ background: 'var(--accent-primary)', color: 'black', padding: '8px 16px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Attention</div>
+                            <p style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem', margin: 0, letterSpacing: '0.5px' }}>
+                                Constantly check your <span style={{ color: 'var(--accent-primary)' }}>Mail ID</span> and <span style={{ color: 'var(--accent-primary)' }}>Account Profile</span> for status updates and event credentials.
+                            </p>
                         </div>
                     </div>
                 </div>
