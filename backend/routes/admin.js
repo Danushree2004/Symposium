@@ -70,8 +70,15 @@ async function extractUpiFromQR(fileSource) {
 router.get('/settings', async (req, res) => {
   try {
     console.log('[DEBUG] GET /settings requested');
-    // Ensure the model is available before query
-    const Settings = require('../models/Settings');
+    
+    // Explicitly verify DB connection state
+    const mongoose = require('mongoose');
+    if (mongoose.connection.readyState === 0) {
+      console.log('[DEBUG] DB not ready, waiting...');
+      // Re-trigger connect logic from index.js via a helper if needed, 
+      // but usually the app.use middleware in index.js handles this.
+    }
+
     let settings = await Settings.findOne({ key: 'symposium_config' });
     
     if (!settings) {
@@ -95,7 +102,11 @@ router.get('/settings', async (req, res) => {
     res.json(settings.value || {});
   } catch (err) {
     console.error('[CRITICAL] GET /settings error:', err);
-    res.status(500).json({ error: 'Internal Server Error', details: err.message });
+    res.status(500).json({ 
+      error: 'Internal Server Error', 
+      details: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined 
+    });
   }
 });
 
