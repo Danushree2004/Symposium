@@ -419,6 +419,7 @@ const EventDetail = () => {
                                                 <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#666", letterSpacing: "1px", marginTop: "4px" }}>ONE-TIME SYMPOSIUM FEE</div>
                                                 <div style={{ fontSize: "0.5rem", color: "#999", marginTop: "8px", wordBreak: 'break-all' }}>UPI ID: {settings.upiId}</div>
                                             </div>
+                                        </motion.div>
                                     )}
 
                                     {/* Transaction ID Input - Shown only if not already paid */}
