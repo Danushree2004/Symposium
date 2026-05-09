@@ -301,14 +301,17 @@ const EventDetail = () => {
                         )}
 
                         {/* Always show team name input regardless of registration type */}
-                        <input 
-                            className="input-cyber" 
-                            type="text" 
-                            required 
-                            placeholder={formData.registrationType === "individual" ? "PARTICIPANT / TEAM NAME" : "TEAM NAME"} 
-                            value={formData.teamName} 
-                            onChange={(e) => setFormData({...formData, teamName: e.target.value})} 
-                        />
+                        <div style={{ position: "relative" }}>
+                            <Users size={18} style={{ position: "absolute", left: "18px", top: "50%", transform: "translateY(-50%)", color: "var(--accent-primary)", opacity: 0.6, zIndex: 1 }} />
+                            <input 
+                                className="input-cyber" 
+                                type="text" 
+                                required 
+                                placeholder={formData.registrationType === "individual" ? "PARTICIPANT / TEAM NAME" : "TEAM NAME"} 
+                                value={formData.teamName} 
+                                onChange={(e) => setFormData({...formData, teamName: e.target.value})} 
+                            />
+                        </div>
 
                         <div style={{ border: "1px solid rgba(255,255,255,0.05)", padding: "1.2rem", borderRadius: "16px", background: "rgba(0,0,0,0.3)", boxShadow: "inset 0 0 20px rgba(0,0,0,0.5)" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.2rem" }}>
