@@ -70,23 +70,29 @@ async function extractUpiFromQR(fileSource) {
 router.get('/settings', async (req, res) => {
   try {
     console.log('[DEBUG] GET /settings requested');
+    // Ensure the model is available before query
+    const Settings = require('../models/Settings');
     let settings = await Settings.findOne({ key: 'symposium_config' });
+    
     if (!settings) {
       console.log('[DEBUG] Settings not found, creating default');
-      settings = new Settings({ 
-        key: 'symposium_config', 
-        value: { 
+      const defaultValue = { 
           upiId: '919994645063@ybl', 
           baseAmount: 200,
           qrCode: '',
           venue: 'MCA CC 1 Lab',
           contactEmail: 'admin@orion.com'
-        } 
+      };
+      
+      settings = new Settings({ 
+        key: 'symposium_config', 
+        value: defaultValue
       });
       await settings.save();
     }
-    console.log('[DEBUG] Returning settings:', settings.value);
-    res.json(settings.value);
+    
+    // Ensure we return an object even if nested value is messy
+    res.json(settings.value || {});
   } catch (err) {
     console.error('[CRITICAL] GET /settings error:', err);
     res.status(500).json({ error: 'Internal Server Error', details: err.message });
