@@ -13,15 +13,10 @@ async function extractTransactionDetails(fileSource) {
     // 1. Try OCR first to find Transaction ID patterns
     console.log('[DEBUG] Starting OCR Extraction...');
     
-    // Configure worker options for serverless/Vercel environments
-    const worker = await Tesseract.createWorker('eng', 1, {
-      cachePath: '.',
-      workerPath: 'https://unpkg.com/tesseract.js@v5.1.1/dist/worker.min.js',
-      corePath: 'https://unpkg.com/tesseract.js-core@v5.1.0/tesseract-core-simd.wasm.js',
-    });
-
-    const { data: { text } } = await worker.recognize(fileSource);
-    await worker.terminate();
+    // Configure worker options for serverless/Vercel environments using recognize() directly
+    // node-tesseract fails with remote worker paths due to cross-origin worker restrictions in Node environment
+    const ocrResult = await Tesseract.recognize(fileSource, 'eng');
+    const text = ocrResult.data.text;
 
     console.log('[DEBUG] OCR Text Extracted:', text.substring(0, 100) + '...');
 
